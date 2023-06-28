@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brewery_SCADA_System.Database
 {
-    public class Context : DbContext
+    public class DatabaseContext : DbContext
     {
         protected readonly IConfiguration Configuration;
 
-        public Context(IConfiguration configuration)
+        public DatabaseContext(IConfiguration configuration)
         {
             Configuration = configuration;
         }
