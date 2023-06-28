@@ -1,6 +1,6 @@
 ﻿namespace Brewery_SCADA_System.Models
 {
-    public class BaseEntity
+    public interface IBaseEntity
     {
         public Guid Id { get; set; }
     }

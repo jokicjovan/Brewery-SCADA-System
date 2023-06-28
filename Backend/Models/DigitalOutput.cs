@@ -1,7 +1,8 @@
 ﻿namespace Brewery_SCADA_System.Models
 {
-    public class DigitalOutput : BaseEntity
+    public class DigitalOutput : IBaseEntity
     {
+        public Guid Id { get; set; }
         public string Description { get; set; }
         public string IOAddress { get; set; }
         public double InitialValue { get; set; }
