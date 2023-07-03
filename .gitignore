@@ -586,3 +586,7 @@ Backend/Migrations/
 *.sqlite3
 *.db-shm
 *.db-wal
+*.db
+*.db-shm
+*.db-wal
+Backend/Database/LocalDatabase.db
