@@ -1,6 +1,8 @@
 ﻿using Brewery_SCADA_System.DTO;
+using Brewery_SCADA_System.Exceptions;
 using Brewery_SCADA_System.Models;
 using Brewery_SCADA_System.Repository;
+using System.Net;
 
 namespace Brewery_SCADA_System.Services
 {
@@ -13,11 +15,20 @@ namespace Brewery_SCADA_System.Services
             _userRepository = userRepository;
         }
 
-        public void createUser(UserDTO userDto) 
+        public async Task<User> Authenticate(UserDTO userDTO) {
+            User user = await _userRepository.FindByEmail(userDTO.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(userDTO.Password, user.Password))
+            {
+                throw new ResourceNotFoundException("Email or password is incorrect!");
+            }
+            return user;
+        }
+
+        public void CreateUser(UserDTO userDTO) 
         {
             User user = new User();
-            user.Username = userDto.Username;
-            user.Password = userDto.Password;
+            user.Email = userDTO.Email;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
             user.Role = "User";
             _userRepository.Create(user);
         }
