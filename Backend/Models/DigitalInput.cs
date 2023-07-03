@@ -8,16 +8,14 @@
         public string IOAddress { get; set; }
         public int ScanTime { get; set; }
         public bool ScanOn { get; set; }
-        public double Value { get; set; }
 
-        public DigitalInput(string description, string driver, string iOAddress, int scanTime, bool scanOn, double value)
+        public DigitalInput(string description, string driver, string iOAddress, int scanTime, bool scanOn)
         {
             Description = description;
             Driver = driver;
             IOAddress = iOAddress;
             ScanTime = scanTime;
             ScanOn = scanOn;
-            Value = value;
         }
 
         public DigitalInput()

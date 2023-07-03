@@ -13,10 +13,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DatabaseContext>();
 
 //Repositories
-builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
+builder.Services.AddSingleton<DatabaseContext>();
 
 //Services
-builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IDeviceService, DeviceService>();
 
 //Security
 builder.Services.AddTransient<CustomCookieAuthenticationEvents>();
