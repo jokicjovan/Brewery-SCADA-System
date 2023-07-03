@@ -6,6 +6,8 @@
         public string Username { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
+        public List<AnalogInput> AnalogInputs { get; set; }
+        public List<DigitalInput> DigitalInputs { get; set; }
 
         public User(string username, string password, string role)
         {
