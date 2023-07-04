@@ -21,10 +21,13 @@ builder.Services.AddSingleton<IAnalogInputRepository, AnalogInputRepository>();
 builder.Services.AddSingleton<IDigitalInputRepository, DigitalInputRepository>();
 builder.Services.AddSingleton<IIODigitalDataRepository, IODigitalDataRepository>();
 builder.Services.AddSingleton<IIOAnalogDataRepository, IOAnalogDataRepository>();
+builder.Services.AddSingleton<IAlarmRepository, AlarmRepository>();
+builder.Services.AddSingleton<IAlarmAlertRepository, AlarmAlertRepository>();
 //Services
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IDeviceService, DeviceService>();
 builder.Services.AddSingleton<ITagService, TagService>();
+builder.Services.AddSingleton<IAlarmService, AlarmService>();
 
 //Security
 builder.Services.AddTransient<CustomCookieAuthenticationEvents>();

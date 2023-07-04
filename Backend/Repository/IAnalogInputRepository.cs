@@ -4,5 +4,6 @@ namespace Brewery_SCADA_System.Repository
 {
     public interface IAnalogInputRepository:ICrudRepository<AnalogInput>
     {
+        public Task<AnalogInput> FindByIdWithAlarms(Guid id);
     }
 }

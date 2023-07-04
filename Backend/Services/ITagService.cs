@@ -10,5 +10,5 @@ namespace Brewery_SCADA_System.Services
         Task switchDigitalTag(Guid tagId, Guid userId);
         Task deleteAnalogInputAsync(Guid tagId, Guid userId);
         Task deleteDigitalInputAsync(Guid tagId, Guid userId);
-s    }
+    }
 }

@@ -18,6 +18,7 @@ namespace Brewery_SCADA_System.Database
         }
 
         public DbSet<Alarm> Alarm { get; set; }
+        public DbSet<AlarmAlert> AlarmAlert { get; set; }
         public DbSet<AnalogInput> AnalogInput { get; set; }
         public DbSet<AnalogOutput> AnalogOutput { get; set; }
         public DbSet<Device> Devices { get; set; }

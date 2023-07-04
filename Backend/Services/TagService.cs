@@ -17,6 +17,7 @@ namespace Brewery_SCADA_System.Services
         private readonly IUserRepository _userRepository;
         private readonly IIODigitalDataRepository _ioDigitalDataRepository;
         private readonly IIOAnalogDataRepository _ioAnalogDataRepository;
+        private readonly IAlarmAlertRepository _alarmAlertRepository;
 
         // private readonly DatabaseContext _databaseContext;
 
@@ -32,7 +33,7 @@ namespace Brewery_SCADA_System.Services
         //
         // }
 
-        public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository, IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, IIOAnalogDataRepository ioAnalogDataRepository)
+        public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository, IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository)
         {
             _analogInputRepository = analogInputRepository;
             _digitalInputRepository = digitalInputRepository;
@@ -40,6 +41,7 @@ namespace Brewery_SCADA_System.Services
             _userRepository = userRepository;
             _ioDigitalDataRepository = ioDigitalDataRepository;
             _ioAnalogDataRepository = ioAnalogDataRepository;
+            _alarmAlertRepository = alarmAlertRepository;
         }
 
         public async Task<AnalogInput> addAnalogInputAsync(AnalogInput input, Guid userId)
@@ -49,7 +51,7 @@ namespace Brewery_SCADA_System.Services
             if (input.HighLimit <= input.LowLimit)
                 throw new InvalidInputException("High limit cannot be lower than low limit");
             if (input.ScanTime <= 0)
-                throw new InvalidInputException("Scan time must be greather than 0");
+                throw new InvalidInputException("Scan time must be greater than 0");
             User user = _userRepository.Read(userId);
             if (user == null)
                 throw new InvalidInputException("User does not exist");
@@ -64,7 +66,7 @@ namespace Brewery_SCADA_System.Services
             if ( await _deviceRepository.FindByAddress(input.IOAddress) == null)
                 throw new InvalidInputException("Address does not exist");
             if (input.ScanTime <= 0)
-                throw new InvalidInputException("Scan time must be greather than 0");
+                throw new InvalidInputException("Scan time must be greater than 0");
             User user = _userRepository.Read(userId);
             if (user == null)
                 throw new InvalidInputException("User does not exist");
@@ -93,6 +95,7 @@ namespace Brewery_SCADA_System.Services
             _digitalInputRepository.Delete(tag.Id);
         }
 
+
         public async Task deleteAnalogInputAsync(Guid tagId, Guid userId)
         {
             User user = _userRepository.Read(userId);
@@ -113,13 +116,9 @@ namespace Brewery_SCADA_System.Services
 
         public async Task switchAnalogTag(Guid tagId, Guid userId)
         {
-            User user = await _userRepository.FindByIdWithTags(userId);
-            if (user == null)
-                throw new ResourceNotFoundException("User not found!");
-            AnalogInput analogInput = _analogInputRepository.Read(tagId);
-            if (analogInput == null)
-                throw new ResourceNotFoundException("There is no analog tag with this id!");
-            if (!user.AnalogInputs.Any(tag => tag.Id == tagId))
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            AnalogInput analogInput = _analogInputRepository.Read(tagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
+            if (user.AnalogInputs.All(tag => tag.Id != tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
             analogInput.ScanOn = !analogInput.ScanOn;
             _analogInputRepository.Update(analogInput);
@@ -134,7 +133,7 @@ namespace Brewery_SCADA_System.Services
                 Thread.CurrentThread.IsBackground = true;
                 while (true)
                 {
-                    AnalogInput analogInput = _analogInputRepository.Read(tagId);
+                    AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarms(tagId);
                     if (analogInput == null) 
                         break;
                     Console.WriteLine(analogInput.ScanOn);
@@ -154,8 +153,23 @@ namespace Brewery_SCADA_System.Services
                             TagId = analogInput.Id
                         };
                         _ioAnalogDataRepository.Create(ioAnalogData);
-
-                        // TODO: obavestiti alarme
+                        
+                        foreach (Alarm analogInputAlarm in analogInput.Alarms)
+                        {
+                            if ((analogInputAlarm.Type == AlarmType.HIGH &&
+                                 analogInputAlarm.EdgeValue < device.Value) ||
+                                (analogInputAlarm.Type == AlarmType.LOW && analogInputAlarm.EdgeValue > device.Value))
+                            {
+                                AlarmAlert alarmAlert = new AlarmAlert
+                                {
+                                    Id = new Guid(),
+                                    AlarmId = analogInputAlarm.Id,
+                                    Timestamp = DateTime.Now
+                                };
+                                _alarmAlertRepository.Create(alarmAlert);
+                                //TODO: poslati alarm na front
+                            }
+                        }
 
                         // TODO: poslati socketom na front
 
@@ -168,13 +182,9 @@ namespace Brewery_SCADA_System.Services
 
         public async Task switchDigitalTag(Guid tagId, Guid userId)
         {
-            User user = await _userRepository.FindByIdWithTags(userId);
-            if (user == null)
-                throw new ResourceNotFoundException("User not found!");
-            DigitalInput digitalInput = _digitalInputRepository.Read(tagId);
-            if (digitalInput == null)
-                throw new ResourceNotFoundException("There is no digital tag with this id!");
-            if (!user.DigitalInputs.Any(tag => tag.Id == tagId))
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            DigitalInput digitalInput = _digitalInputRepository.Read(tagId) ?? throw new ResourceNotFoundException("There is no digital tag with this id!");
+            if (user.DigitalInputs.All(tag => tag.Id != tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
             digitalInput.ScanOn = !digitalInput.ScanOn;
             _digitalInputRepository.Update(digitalInput);
@@ -209,8 +219,6 @@ namespace Brewery_SCADA_System.Services
                             TagId = digitalInput.Id
                         };
                         _digitalInputRepository.Create(digitalInput);
-
-                        // TODO: obavestiti alarme
 
                         // TODO: poslati socketom na front
 

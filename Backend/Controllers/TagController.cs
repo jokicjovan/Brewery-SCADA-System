@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
+    using System.Security.Cryptography.X509Certificates;
 using Brewery_SCADA_System.Exceptions;
 using Brewery_SCADA_System.Models;
+
 
 namespace Brewery_SCADA_System.Controllers
 {
@@ -22,7 +23,7 @@ namespace Brewery_SCADA_System.Controllers
             _deviceService = deviceService;
             _tagService = tagService;
         }
-
+        
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> addAnalogInput([FromBody] AnalogInputDTO analogInputDTO)
@@ -126,4 +127,4 @@ namespace Brewery_SCADA_System.Controllers
             }
         }
     }
-}|
+}
