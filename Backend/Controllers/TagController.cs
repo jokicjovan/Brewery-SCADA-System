@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using Brewery_SCADA_System.Exceptions;
+using Brewery_SCADA_System.Models;
 
 namespace Brewery_SCADA_System.Controllers
 {
@@ -58,5 +60,27 @@ namespace Brewery_SCADA_System.Controllers
 
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> switchTag([FromQuery] TagType type,[FromQuery] Guid tagId)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if(type == TagType.ANALOG)
+                    await _tagService.switchAnalogTag(tagId, Guid.Parse(userId));
+                else if (type == TagType.DIGITAL)
+                    await _tagService.switchDigitalTag(tagId, Guid.Parse(userId));
+                else
+                    throw new InvalidInputException("Invalid tag type");
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+        }
     }
 }

@@ -10,12 +10,17 @@ namespace Brewery_SCADA_System.Services
     {
 
         private readonly IDeviceRepository _deviceRepository;
-        private readonly DatabaseContext _databaseContext;
+        // private readonly DatabaseContext _databaseContext;
+        //
+        // public DeviceService(IDeviceRepository deviceRepository, IConfiguration configuration)
+        // {
+        //     _databaseContext = new DatabaseContext(configuration);
+        //     _deviceRepository = new DeviceRepository(_databaseContext);
+        // }
 
-        public DeviceService(IDeviceRepository deviceRepository, IConfiguration configuration)
+        public DeviceService(IDeviceRepository deviceRepository)
         {
-            _databaseContext = new DatabaseContext(configuration);
-            _deviceRepository = new DeviceRepository(_databaseContext);
+            _deviceRepository = deviceRepository;
         }
 
         public void StartSimulation()

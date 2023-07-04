@@ -12,5 +12,13 @@ namespace Brewery_SCADA_System.Repository
         {
             return await _entities.FirstOrDefaultAsync(e => e.Email == email);
         }
+
+        public async Task<User> FindByIdWithTags(Guid id)
+        {
+            return await _entities
+                .Include(e => e.AnalogInputs)
+                .Include(e => e.DigitalInputs)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
     }
 }

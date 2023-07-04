@@ -10,17 +10,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DatabaseContext>();
+// builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddSingleton<DatabaseContext>();
+
 
 //Repositories
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IDeviceRepository, DeviceRepository>();
-builder.Services.AddTransient<IAnalogInputRepository, AnalogInputRepository>();
-builder.Services.AddTransient<IDigitalInputRepository, DigitalInputRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
+builder.Services.AddSingleton<IAnalogInputRepository, AnalogInputRepository>();
+builder.Services.AddSingleton<IDigitalInputRepository, DigitalInputRepository>();
+builder.Services.AddSingleton<IIODigitalDataRepository, IODigitalDataRepository>();
+builder.Services.AddSingleton<IIOAnalogDataRepository, IOAnalogDataRepository>();
 //Services
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IDeviceService, DeviceService>();
-builder.Services.AddTransient<ITagService, TagService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IDeviceService, DeviceService>();
+builder.Services.AddSingleton<ITagService, TagService>();
 
 //Security
 builder.Services.AddTransient<CustomCookieAuthenticationEvents>();
