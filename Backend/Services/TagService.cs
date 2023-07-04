@@ -56,7 +56,7 @@ namespace Brewery_SCADA_System.Services
 
             user.AnalogInputs.Add(input);
             _userRepository.Update(user);
-            return _analogInputRepository.Create(input);
+            return input;
         }
 
         public async Task<DigitalInput> addDigitalInputAsync(DigitalInput input, Guid userId)
@@ -71,9 +71,44 @@ namespace Brewery_SCADA_System.Services
 
             user.DigitalInputs.Add(input);
             _userRepository.Update(user);
-            input.Id = Guid.NewGuid();
-            DigitalInput saved = _digitalInputRepository.Create(input);
-            return saved;
+
+            return input;
+        }
+
+        public async Task deleteDigitalInputAsync(Guid tagId, Guid userId)
+        {
+            User user = _userRepository.Read(userId);
+            if (user == null)
+                throw new InvalidInputException("User does not exist");
+
+            DigitalInput tag = _digitalInputRepository.Read(tagId);
+            if (tag == null)
+                throw new InvalidInputException("Tag does not exist");
+
+            if (!user.DigitalInputs.Contains(tag))
+                throw new ResourceNotFoundException("Tag does net exist");
+
+            user.DigitalInputs.Remove(tag);
+            _userRepository.Update(user);
+            _digitalInputRepository.Delete(tag.Id);
+        }
+
+        public async Task deleteAnalogInputAsync(Guid tagId, Guid userId)
+        {
+            User user = _userRepository.Read(userId);
+            if (user == null)
+                throw new InvalidInputException("User does not exist");
+
+            AnalogInput tag = _analogInputRepository.Read(tagId);
+            if (tag == null)
+                throw new InvalidInputException("Tag does not exist");
+
+            if (!user.AnalogInputs.Contains(tag))
+                throw new ResourceNotFoundException("Tag does net exist");
+
+            user.AnalogInputs.Remove(tag);
+            _userRepository.Update(user);
+            _analogInputRepository.Delete(tag.Id);
         }
 
         public async Task switchAnalogTag(Guid tagId, Guid userId)

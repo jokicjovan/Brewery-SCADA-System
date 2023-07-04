@@ -16,6 +16,7 @@ namespace Brewery_SCADA_System.Controllers
     {
         private readonly IDeviceService _deviceService;
         private readonly ITagService _tagService;
+
         public TagController(IDeviceService deviceService, ITagService tagService)
         {
             _deviceService = deviceService;
@@ -31,14 +32,14 @@ namespace Brewery_SCADA_System.Controllers
             {
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _tagService.addAnalogInputAsync(new Models.AnalogInput(analogInputDTO),Guid.Parse(userId));
+                await _tagService.addAnalogInputAsync(new Models.AnalogInput(analogInputDTO), Guid.Parse(userId));
                 return Ok();
             }
             else
             {
                 return Forbid("Authentication error!");
             }
-            
+
         }
 
         [HttpPost]
@@ -60,16 +61,58 @@ namespace Brewery_SCADA_System.Controllers
 
         }
 
-        [HttpPost]
+
+        [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> switchTag([FromQuery] TagType type,[FromQuery] Guid tagId)
+        [Route("deleteDigitalInput/{id}")]
+        public async Task<ActionResult> deleteDigitalInput(Guid id)
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
             if (result.Succeeded)
             {
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                if(type == TagType.ANALOG)
+                await _tagService.deleteDigitalInputAsync(id, Guid.Parse(userId));
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        [Route("deleteAnalogInput/{id}")]
+        public async Task<ActionResult> deleteAnalogInput(Guid id)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _tagService.deleteAnalogInputAsync(id, Guid.Parse(userId));
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> switchTag([FromQuery] TagType type, [FromQuery] Guid tagId)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (type == TagType.ANALOG)
                     await _tagService.switchAnalogTag(tagId, Guid.Parse(userId));
                 else if (type == TagType.DIGITAL)
                     await _tagService.switchDigitalTag(tagId, Guid.Parse(userId));
@@ -83,4 +126,4 @@ namespace Brewery_SCADA_System.Controllers
             }
         }
     }
-}
+}|

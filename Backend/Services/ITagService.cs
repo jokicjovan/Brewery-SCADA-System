@@ -8,5 +8,7 @@ namespace Brewery_SCADA_System.Services
         Task<DigitalInput> addDigitalInputAsync(DigitalInput input, Guid userId);
         Task switchAnalogTag(Guid tagId, Guid userId);
         Task switchDigitalTag(Guid tagId, Guid userId);
-    }
+        Task deleteAnalogInputAsync(Guid tagId, Guid userId);
+        Task deleteDigitalInputAsync(Guid tagId, Guid userId);
+s    }
 }
