@@ -15,10 +15,12 @@ builder.Services.AddDbContext<DatabaseContext>();
 //Repositories
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IDeviceRepository, DeviceRepository>();
-
+builder.Services.AddTransient<IAnalogInputRepository, AnalogInputRepository>();
+builder.Services.AddTransient<IDigitalInputRepository, DigitalInputRepository>();
 //Services
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IDeviceService, DeviceService>();
+builder.Services.AddTransient<ITagService, TagService>();
 
 //Security
 builder.Services.AddTransient<CustomCookieAuthenticationEvents>();
@@ -56,7 +58,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowReactApp");
-app.UseMiddleware<ExceptionMiddleware>(false);
+app.UseMiddleware<ExceptionMiddleware>(true);
 app.UseAuthentication();
 app.UseAuthorization();
 

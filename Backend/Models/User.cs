@@ -14,11 +14,14 @@
             Email = email;
             Password = password;
             Role = role;
+            AnalogInputs = new List<AnalogInput>();
+            DigitalInputs = new List<DigitalInput>();
         }
 
         public User()
         {
-            
+            AnalogInputs = new List<AnalogInput>();
+            DigitalInputs = new List<DigitalInput>();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Brewery_SCADA_System.Models
+﻿using Brewery_SCADA_System.DTO;
+
+namespace Brewery_SCADA_System.Models
 {
     public class AnalogInput : IBaseEntity
     {
@@ -24,6 +26,18 @@
             LowLimit = lowLimit;
             HighLimit = highLimit;
             Unit = unit;
+        }
+        public AnalogInput(AnalogInputDTO analogInputDTO)
+        {
+            Description= analogInputDTO.Description;
+            Driver = analogInputDTO.Driver;
+            IOAddress = analogInputDTO.IOAddress;
+            ScanTime = analogInputDTO.ScanTime;
+            Alarms = new List<Alarm>();
+            ScanOn = analogInputDTO.ScanOn;
+            LowLimit = analogInputDTO.LowLimit;
+            HighLimit = analogInputDTO.HighLimit;
+            Unit = analogInputDTO.Unit;
         }
 
         public AnalogInput()
