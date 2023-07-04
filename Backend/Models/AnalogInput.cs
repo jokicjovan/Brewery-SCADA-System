@@ -12,9 +12,8 @@
         public double LowLimit { get; set; }
         public double HighLimit { get; set; }
         public string Unit { get; set; }
-        public double Value { get; set; }
 
-        public AnalogInput(string description, string driver, string iOAddress, int scanTime, List<Alarm> alarms, bool scanOn, double lowLimit, double highLimit, string unit, double value)
+        public AnalogInput(string description, string driver, string iOAddress, int scanTime, List<Alarm> alarms, bool scanOn, double lowLimit, double highLimit, string unit)
         {
             Description = description;
             Driver = driver;
@@ -25,7 +24,6 @@
             LowLimit = lowLimit;
             HighLimit = highLimit;
             Unit = unit;
-            Value = value;
         }
 
         public AnalogInput()
