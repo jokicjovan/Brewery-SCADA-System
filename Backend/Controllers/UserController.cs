@@ -22,12 +22,16 @@ namespace Brewery_SCADA_System.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> login([FromBody] UserDTO userDto)
+        public async Task<ActionResult> login([FromBody] UserLoginDTO userLoginDto)
         {
-            User user = await _userService.Authenticate(userDto);
+            User userToAuthenticate = new User();
+            userToAuthenticate.Email = userLoginDto.Email;
+            userToAuthenticate.Password = userLoginDto.Password;
+            User authenticatedUser = await _userService.Authenticate(userToAuthenticate);
+
             ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Role, user.Role));
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+            identity.AddClaim(new Claim(ClaimTypes.Role, authenticatedUser.Role));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, authenticatedUser.Id.ToString()));
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
             return Ok("Logged in successfully!");
         }
@@ -35,13 +39,14 @@ namespace Brewery_SCADA_System.Controllers
         [HttpPost]
         public ActionResult register([FromBody] UserDTO userDto)
         {
-            _userService.CreateUser(userDto);
+            User user = new User(userDto.Name, userDto.Surname, userDto.Email, userDto.Password, "User");
+            _userService.CreateUser(user);
             return Ok("Registration successful!");
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<String>> logout()
+        public async Task<ActionResult<string>> logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok("Logged out successfully!");

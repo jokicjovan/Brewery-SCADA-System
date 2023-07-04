@@ -5,7 +5,7 @@ namespace Brewery_SCADA_System.Services
 {
     public interface IUserService
     {
-        public Task<User> Authenticate(UserDTO userDTO);
-        public void CreateUser(UserDTO userDTO);
+        public Task<User> Authenticate(User user);
+        public Task<User> CreateUser(User user);
     }
 }
