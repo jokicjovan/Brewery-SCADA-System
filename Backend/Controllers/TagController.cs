@@ -58,5 +58,45 @@ namespace Brewery_SCADA_System.Controllers
 
         }
 
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        [Route("deleteDigitalInput/{id}")]
+        public async Task<ActionResult> deleteDigitalInput(Guid id)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _tagService.deleteDigitalInputAsync(id, Guid.Parse(userId));
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        [Route("deleteAnalogInput/{id}")]
+        public async Task<ActionResult> deleteAnalogInput(Guid id)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _tagService.deleteAnalogInputAsync(id, Guid.Parse(userId));
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+
+        }
+
     }
 }
