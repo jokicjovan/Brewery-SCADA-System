@@ -1,8 +1,6 @@
-﻿using Brewery_SCADA_System.DTO;
-using Brewery_SCADA_System.Exceptions;
+﻿using Brewery_SCADA_System.Exceptions;
 using Brewery_SCADA_System.Models;
 using Brewery_SCADA_System.Repository;
-using System.Net;
 
 namespace Brewery_SCADA_System.Services
 {
@@ -15,22 +13,28 @@ namespace Brewery_SCADA_System.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> Authenticate(UserDTO userDTO) {
-            User user = await _userRepository.FindByEmail(userDTO.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(userDTO.Password, user.Password))
+        public async Task<User> Authenticate(User user) {
+            User authenticatedUser = await _userRepository.FindByEmail(user.Email);
+            if (authenticatedUser == null || !BCrypt.Net.BCrypt.Verify(user.Password, authenticatedUser.Password))
             {
                 throw new ResourceNotFoundException("Email or password is incorrect!");
             }
-            return user;
+            return authenticatedUser;
         }
 
-        public void CreateUser(UserDTO userDTO) 
+        public async Task<User> CreateUser(User user) 
         {
-            User user = new User();
-            user.Email = userDTO.Email;
-            user.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
-            user.Role = "User";
-            _userRepository.Create(user);
+            if (await _userRepository.FindByEmail(user.Email) != null)
+            {
+                throw new InvalidInputException("User with that email already exists!");
+            }
+            User createdUser = new User();
+            createdUser.Name = user.Name;
+            createdUser.Surname = user.Surname;
+            createdUser.Email = user.Email;
+            createdUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            createdUser.Role = user.Role;
+            return _userRepository.Create(createdUser);
         }
     }
 }

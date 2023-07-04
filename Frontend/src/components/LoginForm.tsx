@@ -1,8 +1,8 @@
 import {useState} from "react";
-import {Avatar, Box, Button, CssBaseline, InputLabel, Stack, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Button, Container, CssBaseline, InputLabel, Stack, TextField, Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {environment} from "./Environment.tsx";
+import {environment} from "../utils/Environment.tsx";
 
 export default function LoginForm(){
     const [email, setEmail] = useState("")
@@ -21,6 +21,7 @@ export default function LoginForm(){
                 navigate(0);
             }
         }).catch((error) => {
+            console.log(error)
             if (error.response?.status !== undefined && error.response.status === 404){
                 setError("Invalid username or password!");
             }
@@ -35,6 +36,7 @@ export default function LoginForm(){
 
 
     return <>
+        <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
             sx={{
@@ -44,9 +46,8 @@ export default function LoginForm(){
                 alignItems: 'center',
             }}
         >
-            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}/>
 
-            </Avatar>
             <Typography component="h1" variant="h3">
                 Sign in
             </Typography>
@@ -99,5 +100,6 @@ export default function LoginForm(){
                 </Stack>
             </Box>
         </Box>
+        </Container>
     </>
 }
