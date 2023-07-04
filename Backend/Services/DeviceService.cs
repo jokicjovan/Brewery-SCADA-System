@@ -1,4 +1,5 @@
-﻿using Brewery_SCADA_System.DTO;
+﻿using Brewery_SCADA_System.Database;
+using Brewery_SCADA_System.DTO;
 using Brewery_SCADA_System.Exceptions;
 using Brewery_SCADA_System.Models;
 using Brewery_SCADA_System.Repository;
@@ -9,10 +10,12 @@ namespace Brewery_SCADA_System.Services
     {
 
         private readonly IDeviceRepository _deviceRepository;
+        private readonly DatabaseContext _databaseContext;
 
-        public DeviceService(IDeviceRepository deviceRepository)
+        public DeviceService(IDeviceRepository deviceRepository, IConfiguration configuration)
         {
-            _deviceRepository = deviceRepository;
+            _databaseContext = new DatabaseContext(configuration);
+            _deviceRepository = new DeviceRepository(_databaseContext);
         }
 
         public void StartSimulation()
