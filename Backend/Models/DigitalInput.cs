@@ -1,4 +1,6 @@
-﻿namespace Brewery_SCADA_System.Models
+﻿using Brewery_SCADA_System.DTO;
+
+namespace Brewery_SCADA_System.Models
 {
     public class DigitalInput : IBaseEntity
     {
@@ -16,6 +18,15 @@
             IOAddress = iOAddress;
             ScanTime = scanTime;
             ScanOn = scanOn;
+        }
+
+        public DigitalInput(DigitalInputDTO digitalInputDTO)
+        {
+            Description= digitalInputDTO.Description;
+            Driver = digitalInputDTO.Driver;    
+            IOAddress = digitalInputDTO.IOAddress;
+            ScanTime = digitalInputDTO.ScanTime;
+            ScanOn = digitalInputDTO.ScanOn;
         }
 
         public DigitalInput()

@@ -26,11 +26,6 @@ namespace Brewery_SCADA_System.Controllers
             _deviceService.StartSimulation();
             return Ok();
         }
-        [HttpGet]
-        public async Task<ActionResult> getSomething()
-        {
-            return Ok("Majmuneee");
-        }
 
     }
 }
