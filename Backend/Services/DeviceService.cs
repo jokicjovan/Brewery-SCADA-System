@@ -10,6 +10,8 @@ namespace Brewery_SCADA_System.Services
     {
 
         private readonly IDeviceRepository _deviceRepository;
+        public static readonly object dbContextLock = new object();
+
         // private readonly DatabaseContext _databaseContext;
         //
         // public DeviceService(IDeviceRepository deviceRepository, IConfiguration configuration)
@@ -35,11 +37,14 @@ namespace Brewery_SCADA_System.Services
                     List<Device> devices = _deviceRepository.ReadAll().ToList();
                     foreach (Device device in devices)
                     {
-                        if (device.Value == 0)
-                            device.Value = 7;
+                        lock (dbContextLock)
+                        {
+                            if (device.Value == 0)
+                                device.Value = 7;
 
-                        device.Value = device.Value * (r.NextDouble() * 0.4 + 0.8);
-                        _deviceRepository.Update(device);
+                            device.Value = device.Value * (r.NextDouble() * 0.4 + 0.8);
+                            _deviceRepository.Update(device);
+                        }
                     }
                     Thread.Sleep(2000);
                 }

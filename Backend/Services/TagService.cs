@@ -17,6 +17,7 @@ namespace Brewery_SCADA_System.Services
         private readonly IUserRepository _userRepository;
         private readonly IIODigitalDataRepository _ioDigitalDataRepository;
         private readonly IIOAnalogDataRepository _ioAnalogDataRepository;
+
         // private readonly DatabaseContext _databaseContext;
 
         // public TagService(IConfiguration configuration)
@@ -83,7 +84,7 @@ namespace Brewery_SCADA_System.Services
             AnalogInput analogInput = _analogInputRepository.Read(tagId);
             if (analogInput == null)
                 throw new ResourceNotFoundException("There is no analog tag with this id!");
-            if (!user.AnalogInputs.Contains(analogInput))
+            if (!user.AnalogInputs.Any(tag => tag.Id == tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
             analogInput.ScanOn = !analogInput.ScanOn;
             _analogInputRepository.Update(analogInput);
@@ -104,14 +105,18 @@ namespace Brewery_SCADA_System.Services
                     Console.WriteLine(analogInput.ScanOn);
                     if (analogInput.ScanOn)
                     {
-                        Device device = await _deviceRepository.FindByAddress(analogInput.IOAddress);
+                        Task<Device> deviceTask;
+                        lock(DeviceService.dbContextLock)
+                            deviceTask = _deviceRepository.FindByAddress(analogInput.IOAddress);
+                        Device device = deviceTask.Result;
                         Console.WriteLine(device.Value);
                         IOAnalogData ioAnalogData = new IOAnalogData
                         {
                             Id = new Guid(),
                             Address = device.Address,
                             Value = device.Value,
-                            Timestamp = DateTime.Now
+                            Timestamp = DateTime.Now,
+                            TagId = analogInput.Id
                         };
                         _ioAnalogDataRepository.Create(ioAnalogData);
 
@@ -134,7 +139,7 @@ namespace Brewery_SCADA_System.Services
             DigitalInput digitalInput = _digitalInputRepository.Read(tagId);
             if (digitalInput == null)
                 throw new ResourceNotFoundException("There is no digital tag with this id!");
-            if (!user.DigitalInputs.Contains(digitalInput))
+            if (!user.DigitalInputs.Any(tag => tag.Id == tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
             digitalInput.ScanOn = !digitalInput.ScanOn;
             _digitalInputRepository.Update(digitalInput);
@@ -155,13 +160,17 @@ namespace Brewery_SCADA_System.Services
 
                     if (digitalInput.ScanOn)
                     {
-                        Device device = await _deviceRepository.FindByAddress(digitalInput.IOAddress);
-                        IODigitalData ioDigitalData = new IODigitalData
+
+                        Task<Device> deviceTask;
+                        lock (DeviceService.dbContextLock)
+                            deviceTask = _deviceRepository.FindByAddress(digitalInput.IOAddress);
+                        Device device = deviceTask.Result; IODigitalData ioDigitalData = new IODigitalData
                         {
                             Id = new Guid(),
                             Address = device.Address,
                             Value = device.Value,
-                            Timestamp = DateTime.Now
+                            Timestamp = DateTime.Now,
+                            TagId = digitalInput.Id
                         };
                         _digitalInputRepository.Create(digitalInput);
 

@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // builder.Services.AddDbContext<DatabaseContext>();
-builder.Services.AddSingleton<DatabaseContext>();
+builder.Services.AddTransient<DatabaseContext>();
 
 
 //Repositories
