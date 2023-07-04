@@ -164,7 +164,8 @@ namespace Brewery_SCADA_System.Services
                         Task<Device> deviceTask;
                         lock (DeviceService.dbContextLock)
                             deviceTask = _deviceRepository.FindByAddress(digitalInput.IOAddress);
-                        Device device = deviceTask.Result; IODigitalData ioDigitalData = new IODigitalData
+                        Device device = deviceTask.Result; 
+                        IODigitalData ioDigitalData = new IODigitalData
                         {
                             Id = new Guid(),
                             Address = device.Address,
