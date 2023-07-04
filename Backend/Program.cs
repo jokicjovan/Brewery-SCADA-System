@@ -1,4 +1,5 @@
 using Brewery_SCADA_System.Database;
+using Brewery_SCADA_System.Hubs;
 using Brewery_SCADA_System.Infrastructure;
 using Brewery_SCADA_System.Repository;
 using Brewery_SCADA_System.Services;
@@ -56,6 +57,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
            options.EventsType = typeof(CustomCookieAuthenticationEvents);
        });
 
+//websockets
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -71,4 +75,7 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapHub<TagHub>("/Hub/tag");
+app.MapHub<AlarmHub>("/Hub/alarm");
+
 app.Run();
