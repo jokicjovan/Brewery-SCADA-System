@@ -12,5 +12,15 @@ namespace Brewery_SCADA_System.Repository
         {
             return await _entities.Include(e => e.Alarms).Include(u => u.Users).FirstOrDefaultAsync(e => e.Id == id);
         }
+
+        public async Task DeleteAlarms(Guid tagId)
+        {
+            var tag = await _context.AnalogInput.Include(t => t.Alarms).FirstOrDefaultAsync(t => t.Id == tagId);
+            if (tag != null)
+            {
+                tag.Alarms.Clear();
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

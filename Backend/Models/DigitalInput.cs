@@ -36,5 +36,22 @@ namespace Brewery_SCADA_System.Models
         {
             
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is DigitalInput input &&
+                   Id.Equals(input.Id) &&
+                   Description == input.Description &&
+                   Driver == input.Driver &&
+                   IOAddress == input.IOAddress &&
+                   ScanTime == input.ScanTime &&
+                   ScanOn == input.ScanOn &&
+                   EqualityComparer<List<User>>.Default.Equals(Users, input.Users);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Description, Driver, IOAddress, ScanTime, ScanOn, Users);
+        }
     }
 }

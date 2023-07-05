@@ -27,5 +27,15 @@ namespace Brewery_SCADA_System.Repository
         {
             return await _entities.OrderByDescending(e => e.Timestamp).Where(e => e.TagId == id).FirstOrDefaultAsync();
         }
+
+        public async Task DeleteByTagId(Guid id)
+        {
+            var entities = await _entities.Where(e => e.TagId == id).ToListAsync();
+            if (entities.Count > 0)
+            {
+                _entities.RemoveRange(entities);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

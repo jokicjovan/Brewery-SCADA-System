@@ -52,7 +52,7 @@ namespace Brewery_SCADA_System.Services
             if (user.AnalogInputs.All(tag => tag.Id != tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
 
-            _alarmAlertRepository.DeleteByAlarmId(alarmId);
+            await _alarmAlertRepository.DeleteByAlarmId(alarmId);
             analogInput.Alarms = analogInput.Alarms.Where(alarm => alarm.Id != alarmId).ToList();
             _analogInputRepository.Update(analogInput);
             _alarmRepository.Delete(alarmId);
