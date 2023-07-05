@@ -57,6 +57,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
            options.EventsType = typeof(CustomCookieAuthenticationEvents);
        });
 
+builder.Services.AddAuthorization();
+
 //websockets
 builder.Services.AddSignalR();
 
