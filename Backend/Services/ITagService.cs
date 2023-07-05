@@ -1,4 +1,5 @@
-﻿using Brewery_SCADA_System.Models;
+﻿using Brewery_SCADA_System.DTO;
+using Brewery_SCADA_System.Models;
 
 namespace Brewery_SCADA_System.Services
 {
@@ -10,5 +11,10 @@ namespace Brewery_SCADA_System.Services
         Task switchDigitalTag(Guid tagId, Guid userId);
         Task deleteAnalogInputAsync(Guid tagId, Guid userId);
         Task deleteDigitalInputAsync(Guid tagId, Guid userId);
+        Task<TagReportsDto> getAllTagValuesByTime(Guid userId, DateTime timeFrom, DateTime timeTo);
+        Task<List<IOAnalogData>> getLatestAnalogTagsValues(Guid userId);
+        Task<List<IODigitalData>> getLatestDigitalTagsValues(Guid userId);
+        Task<List<IOAnalogData>> getAllAnalogTagValues(Guid userId, Guid tagId);
+        Task<List<IODigitalData>> getAllDigitalTagValues(Guid userId, Guid tagId);
     }
 }

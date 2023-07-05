@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using Brewery_SCADA_System.DTO;
 using Brewery_SCADA_System.Exceptions;
 using Brewery_SCADA_System.Models;
@@ -54,6 +56,58 @@ namespace Brewery_SCADA_System.Services
             analogInput.Alarms = analogInput.Alarms.Where(alarm => alarm.Id != alarmId).ToList();
             _analogInputRepository.Update(analogInput);
             _alarmRepository.Delete(alarmId);
+        }
+
+        public async Task<List<AlarmReportsDTO>> getAllAlarmsByTime(Guid userId, DateTime timeFrom, DateTime timeTo)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            List<AlarmReportsDTO> alarmReports = new List<AlarmReportsDTO>();
+            foreach (AnalogInput analogInput in user.AnalogInputs)
+            {
+                foreach (Alarm analogInputAlarm in analogInput.Alarms)
+                {
+                    List<AlarmAlert> alarmAlerts = (List<AlarmAlert>)await _alarmAlertRepository.FindByIdByTime(analogInputAlarm.Id, timeFrom, timeTo);
+                    List<AlarmReportsDTO> alarmReportsDtos = alarmAlerts.Select(item => new AlarmReportsDTO
+                    {
+                        AlarmId = analogInputAlarm.Id,
+                        Type = analogInputAlarm.Type,
+                        Priority = analogInputAlarm.Priority,
+                        EdgeValue = analogInputAlarm.EdgeValue,
+                        Unit = analogInputAlarm.Unit,
+                        Timestamp = item.Timestamp
+                    }).ToList();
+                    alarmReports.AddRange(alarmReportsDtos);
+                }
+            }
+
+            return alarmReports.OrderBy(item => item.Timestamp).ToList();
+        }
+
+
+        public async Task<List<AlarmReportsDTO>> getAllAlarmsByPriority(Guid userId, AlarmPriority priority)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            List<AlarmReportsDTO> alarmReports = new List<AlarmReportsDTO>();
+            foreach (AnalogInput analogInput in user.AnalogInputs)
+            {
+                foreach (Alarm analogInputAlarm in analogInput.Alarms)
+                {
+                    if(analogInputAlarm.Priority != priority) continue;
+                    List<AlarmAlert> alarmAlerts = (List<AlarmAlert>)await _alarmAlertRepository.FindByAlarmId(analogInputAlarm.Id);
+                    List<AlarmReportsDTO> alarmReportsDtos = alarmAlerts.Select(item => new AlarmReportsDTO
+                    {
+                        AlarmId = analogInputAlarm.Id,
+                        Type = analogInputAlarm.Type,
+                        Priority = analogInputAlarm.Priority,
+                        EdgeValue = analogInputAlarm.EdgeValue,
+                        Unit = analogInputAlarm.Unit,
+                        Timestamp = item.Timestamp
+                    }).ToList();
+                    alarmReports.AddRange(alarmReportsDtos);
+                }
+            }
+
+            return alarmReports.OrderBy(item => item.Timestamp).ToList();
         }
     }
 }
