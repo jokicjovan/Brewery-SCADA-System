@@ -7,6 +7,8 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Brewery_SCADA_System.Database;
 using Brewery_SCADA_System.DTO;
+using Microsoft.AspNetCore.SignalR;
+using Brewery_SCADA_System.Hubs;
 
 namespace Brewery_SCADA_System.Services
 {
@@ -19,6 +21,9 @@ namespace Brewery_SCADA_System.Services
         private readonly IIODigitalDataRepository _ioDigitalDataRepository;
         private readonly IIOAnalogDataRepository _ioAnalogDataRepository;
         private readonly IAlarmAlertRepository _alarmAlertRepository;
+        private readonly IHubContext<TagHub, ITagClient> _tagHub;
+        private readonly IHubContext<AlarmHub, IAlarmClient> _alarmHub;
+
 
         // private readonly DatabaseContext _databaseContext;
 
@@ -34,7 +39,10 @@ namespace Brewery_SCADA_System.Services
         //
         // }
 
-        public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository, IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository)
+        public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository,
+            IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, 
+            IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository, 
+            IHubContext<TagHub, ITagClient> tagHub, IHubContext<AlarmHub, IAlarmClient> alarmHub)
         {
             _analogInputRepository = analogInputRepository;
             _digitalInputRepository = digitalInputRepository;
@@ -43,6 +51,8 @@ namespace Brewery_SCADA_System.Services
             _ioDigitalDataRepository = ioDigitalDataRepository;
             _ioAnalogDataRepository = ioAnalogDataRepository;
             _alarmAlertRepository = alarmAlertRepository;
+            _tagHub = tagHub;
+            _alarmHub = alarmHub;
         }
 
         public async Task<AnalogInput> addAnalogInputAsync(AnalogInput input, Guid userId)
@@ -230,12 +240,12 @@ namespace Brewery_SCADA_System.Services
                                     Timestamp = DateTime.Now
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
-                                //TODO: poslati alarm na front
+
+                                await _alarmHub.Clients.All.ReceiveData(alarmAlert);
                             }
                         }
 
-                        // TODO: poslati socketom na front
-
+                        await _tagHub.Clients.All.ReceiveAnalogData(ioAnalogData);
                     }
                     Thread.Sleep(analogInput.ScanTime * 1000);
 
@@ -283,7 +293,7 @@ namespace Brewery_SCADA_System.Services
                         };
                         _digitalInputRepository.Create(digitalInput);
 
-                        // TODO: poslati socketom na front
+                        await _tagHub.Clients.All.ReceiveDigitalData(ioDigitalData);
 
                     }
                     Thread.Sleep(digitalInput.ScanTime * 1000);
