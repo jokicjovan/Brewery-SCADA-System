@@ -12,5 +12,6 @@ namespace Brewery_SCADA_System.Repository
         {
             return await _entities.Include(u => u.Users).FirstOrDefaultAsync(e => e.Id == id);
         }
+
     }
 }

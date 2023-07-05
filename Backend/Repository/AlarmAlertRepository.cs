@@ -10,7 +10,7 @@ namespace Brewery_SCADA_System.Repository
         {
         }
 
-        public void DeleteByAlarmId(Guid id)
+        public Task DeleteByAlarmId(Guid id)
         {
             var entityToDelete = ReadAll();
             foreach (var alarmAlert in entityToDelete)
@@ -19,6 +19,7 @@ namespace Brewery_SCADA_System.Repository
                 _context.Remove(alarmAlert);
                 _context.SaveChanges();
             }
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<AlarmAlert>> FindByIdByTime(Guid id, DateTime from, DateTime to)

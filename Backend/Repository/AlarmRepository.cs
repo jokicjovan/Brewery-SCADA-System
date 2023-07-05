@@ -7,6 +7,7 @@ namespace Brewery_SCADA_System.Repository
     {
         public AlarmRepository(DatabaseContext context) : base(context)
         {
+           
         }
     }
 }

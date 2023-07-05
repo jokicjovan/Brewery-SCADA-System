@@ -65,7 +65,7 @@ namespace Brewery_SCADA_System.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        [Route("deleteDigitalInput/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult> deleteDigitalInput(Guid id)
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
@@ -85,7 +85,7 @@ namespace Brewery_SCADA_System.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        [Route("deleteAnalogInput/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult> deleteAnalogInput(Guid id)
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();

@@ -46,5 +46,38 @@ namespace Brewery_SCADA_System.Models
         public AnalogInput()
         {
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is AnalogInput input &&
+                   Id.Equals(input.Id) &&
+                   Description == input.Description &&
+                   Driver == input.Driver &&
+                   IOAddress == input.IOAddress &&
+                   ScanTime == input.ScanTime &&
+                   EqualityComparer<List<Alarm>>.Default.Equals(Alarms, input.Alarms) &&
+                   ScanOn == input.ScanOn &&
+                   LowLimit == input.LowLimit &&
+                   HighLimit == input.HighLimit &&
+                   Unit == input.Unit &&
+                   EqualityComparer<List<User>>.Default.Equals(Users, input.Users);
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Description);
+            hash.Add(Driver);
+            hash.Add(IOAddress);
+            hash.Add(ScanTime);
+            hash.Add(Alarms);
+            hash.Add(ScanOn);
+            hash.Add(LowLimit);
+            hash.Add(HighLimit);
+            hash.Add(Unit);
+            hash.Add(Users);
+            return hash.ToHashCode();
+        }
     }
 }

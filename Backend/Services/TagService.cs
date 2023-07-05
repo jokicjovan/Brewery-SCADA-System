@@ -21,13 +21,14 @@ namespace Brewery_SCADA_System.Services
         private readonly IIODigitalDataRepository _ioDigitalDataRepository;
         private readonly IIOAnalogDataRepository _ioAnalogDataRepository;
         private readonly IAlarmAlertRepository _alarmAlertRepository;
+        private readonly IAlarmRepository _alarmRepository;
         private readonly IHubContext<TagHub, ITagClient> _tagHub;
         private readonly IHubContext<AlarmHub, IAlarmClient> _alarmHub;
 
         public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository,
-            IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, 
-            IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository, 
-            IHubContext<TagHub, ITagClient> tagHub, IHubContext<AlarmHub, IAlarmClient> alarmHub)
+            IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository,
+            IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository,
+            IHubContext<TagHub, ITagClient> tagHub, IHubContext<AlarmHub, IAlarmClient> alarmHub, IAlarmRepository alarmRepository)
         {
             _analogInputRepository = analogInputRepository;
             _digitalInputRepository = digitalInputRepository;
@@ -38,6 +39,7 @@ namespace Brewery_SCADA_System.Services
             _alarmAlertRepository = alarmAlertRepository;
             _tagHub = tagHub;
             _alarmHub = alarmHub;
+            _alarmRepository = alarmRepository;
         }
 
         public async Task<AnalogInput> addAnalogInputAsync(AnalogInput input, Guid userId)
@@ -54,13 +56,15 @@ namespace Brewery_SCADA_System.Services
 
             input.Users.Add(user);
             user.AnalogInputs.Add(input);
-            _userRepository.Update(user);
+            User saved = _userRepository.Update(user);
+            if (input.ScanOn)
+                StartAnalogTagReading(saved.AnalogInputs.Last().Id);
             return input;
         }
 
         public async Task<DigitalInput> addDigitalInputAsync(DigitalInput input, Guid userId)
         {
-            if ( await _deviceRepository.FindByAddress(input.IOAddress) == null)
+            if (await _deviceRepository.FindByAddress(input.IOAddress) == null)
                 throw new InvalidInputException("Address does not exist");
             if (input.ScanTime <= 0)
                 throw new InvalidInputException("Scan time must be greater than 0");
@@ -69,14 +73,15 @@ namespace Brewery_SCADA_System.Services
                 throw new InvalidInputException("User does not exist");
 
             user.DigitalInputs.Add(input);
-            _userRepository.Update(user);
-
+            User saved = _userRepository.Update(user);
+            if (input.ScanOn)
+                StartDigitalTagReading(saved.DigitalInputs.Last().Id);
             return input;
         }
 
         public async Task deleteDigitalInputAsync(Guid tagId, Guid userId)
         {
-            User user = _userRepository.Read(userId);
+            User user = await _userRepository.FindByIdWithTags(userId);
             if (user == null)
                 throw new InvalidInputException("User does not exist");
 
@@ -90,6 +95,7 @@ namespace Brewery_SCADA_System.Services
             user.DigitalInputs.Remove(tag);
             _userRepository.Update(user);
             _digitalInputRepository.Delete(tag.Id);
+
         }
 
         public async Task<TagReportsDto> getAllTagValuesByTime(Guid userId, DateTime timeFrom, DateTime timeTo)
@@ -157,20 +163,26 @@ namespace Brewery_SCADA_System.Services
 
         public async Task deleteAnalogInputAsync(Guid tagId, Guid userId)
         {
-            User user = _userRepository.Read(userId);
+            User user = await _userRepository.FindByIdWithTags(userId);
             if (user == null)
                 throw new InvalidInputException("User does not exist");
 
-            AnalogInput tag = _analogInputRepository.Read(tagId);
+            AnalogInput tag = await _analogInputRepository.FindByIdWithAlarmsAndUsers(tagId);
             if (tag == null)
                 throw new InvalidInputException("Tag does not exist");
 
-            if (!user.AnalogInputs.Contains(tag))
+            if (!user.AnalogInputs.Any(input => input.Id == tagId))
                 throw new ResourceNotFoundException("Tag does net exist");
 
             user.AnalogInputs.Remove(tag);
+            await _ioAnalogDataRepository.DeleteByTagId(tagId);
             _userRepository.Update(user);
-            _analogInputRepository.Delete(tag.Id);
+            _analogInputRepository.Delete(tagId);
+            foreach (var alarm in tag.Alarms)
+            {
+                await _alarmAlertRepository.DeleteByAlarmId(alarm.Id);
+                _alarmRepository.Delete(alarm.Id);
+            }
         }
 
         public async Task switchAnalogTag(Guid tagId, Guid userId)
@@ -181,7 +193,7 @@ namespace Brewery_SCADA_System.Services
                 throw new InvalidInputException("User cannot access other users tags!");
             analogInput.ScanOn = !analogInput.ScanOn;
             _analogInputRepository.Update(analogInput);
-            if(analogInput.ScanOn)
+            if (analogInput.ScanOn)
                 StartAnalogTagReading(tagId);
         }
 
@@ -193,13 +205,13 @@ namespace Brewery_SCADA_System.Services
                 while (true)
                 {
                     AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarmsAndUsers(tagId);
-                    if (analogInput == null) 
+                    if (analogInput == null)
                         break;
                     Console.WriteLine(analogInput.ScanOn);
                     if (analogInput.ScanOn)
                     {
                         Task<Device> deviceTask;
-                        lock(DeviceService.dbContextLock)
+                        lock (DeviceService.dbContextLock)
                             deviceTask = _deviceRepository.FindByAddress(analogInput.IOAddress);
                         Device device = deviceTask.Result;
                         Console.WriteLine(device.Value);
@@ -212,7 +224,7 @@ namespace Brewery_SCADA_System.Services
                             TagId = analogInput.Id
                         };
                         _ioAnalogDataRepository.Create(ioAnalogData);
-                        
+
                         foreach (Alarm analogInputAlarm in analogInput.Alarms)
                         {
                             if ((analogInputAlarm.Type == AlarmType.HIGH &&
@@ -247,7 +259,7 @@ namespace Brewery_SCADA_System.Services
                 throw new InvalidInputException("User cannot access other users tags!");
             digitalInput.ScanOn = !digitalInput.ScanOn;
             _digitalInputRepository.Update(digitalInput);
-            if(digitalInput.ScanOn)
+            if (digitalInput.ScanOn)
                 StartDigitalTagReading(tagId);
         }
 
@@ -268,7 +280,7 @@ namespace Brewery_SCADA_System.Services
                         Task<Device> deviceTask;
                         lock (DeviceService.dbContextLock)
                             deviceTask = _deviceRepository.FindByAddress(digitalInput.IOAddress);
-                        Device device = deviceTask.Result; 
+                        Device device = deviceTask.Result;
                         IODigitalData ioDigitalData = new IODigitalData
                         {
                             Id = new Guid(),
