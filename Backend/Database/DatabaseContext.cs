@@ -1,5 +1,6 @@
 ﻿using Brewery_SCADA_System.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Brewery_SCADA_System.Database
 {
@@ -31,6 +32,20 @@ namespace Brewery_SCADA_System.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Device>().HasData(new Device("111111",10), new Device("222222", 10),new Device("333333", 10), new Device("444444", 10),new Device("666666", 10));
+
+            modelBuilder.Entity<User>()
+               .HasIndex(c => new { c.Email })
+           .IsUnique(true);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.AnalogInputs)
+                .WithMany(e => e.Users)
+                .UsingEntity("UsersToAnalogInputsJoinTable");
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.DigitalInputs)
+                .WithMany(e => e.Users)
+                .UsingEntity("UsersToDigitalInputsJoinTable");
         }
 
 

@@ -24,21 +24,6 @@ namespace Brewery_SCADA_System.Services
         private readonly IHubContext<TagHub, ITagClient> _tagHub;
         private readonly IHubContext<AlarmHub, IAlarmClient> _alarmHub;
 
-
-        // private readonly DatabaseContext _databaseContext;
-
-        // public TagService(IConfiguration configuration)
-        // {
-        //     _databaseContext = new DatabaseContext(configuration);
-        //     _analogInputRepository = new AnalogInputRepository(_databaseContext);
-        //     _deviceRepository = new DeviceRepository(_databaseContext);
-        //     _userRepository = new UserRepository(_databaseContext);
-        //     _digitalInputRepository = new DigitalInputRepository(_databaseContext);
-        //     _ioDigitalDataRepository = new IODigitalDataRepository(_databaseContext);
-        //     _ioAnalogDataRepository = new IOAnalogDataRepository(_databaseContext);
-        //
-        // }
-
         public TagService(IAnalogInputRepository analogInputRepository, IDigitalInputRepository digitalInputRepository,
             IDeviceRepository deviceRepository, IUserRepository userRepository, IIODigitalDataRepository ioDigitalDataRepository, 
             IIOAnalogDataRepository ioAnalogDataRepository, IAlarmAlertRepository alarmAlertRepository, 
@@ -67,6 +52,7 @@ namespace Brewery_SCADA_System.Services
             if (user == null)
                 throw new InvalidInputException("User does not exist");
 
+            input.Users.Add(user);
             user.AnalogInputs.Add(input);
             _userRepository.Update(user);
             return input;
@@ -206,7 +192,7 @@ namespace Brewery_SCADA_System.Services
                 Thread.CurrentThread.IsBackground = true;
                 while (true)
                 {
-                    AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarms(tagId);
+                    AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarmsAndUsers(tagId);
                     if (analogInput == null) 
                         break;
                     Console.WriteLine(analogInput.ScanOn);
@@ -241,11 +227,11 @@ namespace Brewery_SCADA_System.Services
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
 
-                                await _alarmHub.Clients.All.ReceiveData(alarmAlert);
+                                await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveData(alarmAlert);
                             }
                         }
 
-                        await _tagHub.Clients.All.ReceiveAnalogData(ioAnalogData);
+                        await _tagHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAnalogData(ioAnalogData);
                     }
                     Thread.Sleep(analogInput.ScanTime * 1000);
 
@@ -272,7 +258,7 @@ namespace Brewery_SCADA_System.Services
                 Thread.CurrentThread.IsBackground = true;
                 while (true)
                 {
-                    DigitalInput digitalInput = _digitalInputRepository.Read(tagId);
+                    DigitalInput digitalInput = await _digitalInputRepository.FindByIdWithUsers(tagId);
                     if (digitalInput == null)
                         break;
 
@@ -293,8 +279,7 @@ namespace Brewery_SCADA_System.Services
                         };
                         _digitalInputRepository.Create(digitalInput);
 
-                        await _tagHub.Clients.All.ReceiveDigitalData(ioDigitalData);
-
+                        await _tagHub.Clients.Users(digitalInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveDigitalData(ioDigitalData);
                     }
                     Thread.Sleep(digitalInput.ScanTime * 1000);
 

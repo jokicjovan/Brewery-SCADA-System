@@ -27,7 +27,7 @@ namespace Brewery_SCADA_System.Services
         public async Task makeAlarm(Guid userId, AlarmDTO alarmDto)
         {
             User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
-            AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarms(alarmDto.TagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
+            AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarmsAndUsers(alarmDto.TagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
             if (user.AnalogInputs.All(tag => tag.Id != alarmDto.TagId))
                 throw new InvalidInputException("User cannot access other users tags!");
 
@@ -48,7 +48,7 @@ namespace Brewery_SCADA_System.Services
         public async Task deleteAlarm(Guid userId, Guid alarmId, Guid tagId)
         {
             User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
-            AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarms(tagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
+            AnalogInput analogInput = await _analogInputRepository.FindByIdWithAlarmsAndUsers(tagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
             if (user.AnalogInputs.All(tag => tag.Id != tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
 

@@ -14,6 +14,7 @@ namespace Brewery_SCADA_System.Models
         public double LowLimit { get; set; }
         public double HighLimit { get; set; }
         public string Unit { get; set; }
+        public List<User> Users { get; set; }
 
         public AnalogInput(string description, string driver, string iOAddress, int scanTime, List<Alarm> alarms, bool scanOn, double lowLimit, double highLimit, string unit)
         {
@@ -26,6 +27,7 @@ namespace Brewery_SCADA_System.Models
             LowLimit = lowLimit;
             HighLimit = highLimit;
             Unit = unit;
+            Users = new List<User>();
         }
         public AnalogInput(AnalogInputDTO analogInputDTO)
         {
@@ -38,6 +40,7 @@ namespace Brewery_SCADA_System.Models
             LowLimit = analogInputDTO.LowLimit;
             HighLimit = analogInputDTO.HighLimit;
             Unit = analogInputDTO.Unit;
+            Users = new List<User>();
         }
 
         public AnalogInput()

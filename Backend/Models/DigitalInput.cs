@@ -10,6 +10,7 @@ namespace Brewery_SCADA_System.Models
         public string IOAddress { get; set; }
         public int ScanTime { get; set; }
         public bool ScanOn { get; set; }
+        public List<User> Users { get; set; }
 
         public DigitalInput(string description, string driver, string iOAddress, int scanTime, bool scanOn)
         {
@@ -18,6 +19,7 @@ namespace Brewery_SCADA_System.Models
             IOAddress = iOAddress;
             ScanTime = scanTime;
             ScanOn = scanOn;
+            Users = new List<User>();
         }
 
         public DigitalInput(DigitalInputDTO digitalInputDTO)
@@ -27,6 +29,7 @@ namespace Brewery_SCADA_System.Models
             IOAddress = digitalInputDTO.IOAddress;
             ScanTime = digitalInputDTO.ScanTime;
             ScanOn = digitalInputDTO.ScanOn;
+            Users = new List<User>();
         }
 
         public DigitalInput()
