@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Brewery_SCADA_System.Database;
+using Brewery_SCADA_System.DTO;
 
 namespace Brewery_SCADA_System.Services
 {
@@ -93,6 +94,68 @@ namespace Brewery_SCADA_System.Services
             user.DigitalInputs.Remove(tag);
             _userRepository.Update(user);
             _digitalInputRepository.Delete(tag.Id);
+        }
+
+        public async Task<TagReportsDto> getAllTagValuesByTime(Guid userId, DateTime timeFrom, DateTime timeTo)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            TagReportsDto reports = new TagReportsDto();
+            foreach (AnalogInput analogInput in user.AnalogInputs)
+            {
+                List<IOAnalogData> analogData = await _ioAnalogDataRepository.FindByIdByTime(analogInput.Id, timeFrom, timeTo);
+                reports.IoAnalogDataList.AddRange(analogData);
+
+                List<IODigitalData> digitalData = await _ioDigitalDataRepository.FindByIdByTime(analogInput.Id, timeFrom, timeTo);
+                reports.IoDigitalDataList.AddRange(digitalData);
+            }
+
+            return reports;
+        }
+
+        public async Task<List<IOAnalogData>> getLatestAnalogTagsValues(Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            List<IOAnalogData> analogDatas = new List<IOAnalogData>();
+            foreach (AnalogInput analogInput in user.AnalogInputs)
+            {
+                IOAnalogData analogData = await _ioAnalogDataRepository.FindLatestById(analogInput.Id);
+                analogDatas.Add(analogData);
+            }
+
+            return analogDatas;
+        }
+
+        public async Task<List<IODigitalData>> getLatestDigitalTagsValues(Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            List<IODigitalData> digitalDatas = new List<IODigitalData>();
+            foreach (DigitalInput digitalInput in user.DigitalInputs)
+            {
+                IODigitalData digitalData = await _ioDigitalDataRepository.FindLatestById(digitalInput.Id);
+                digitalDatas.Add(digitalData);
+            }
+
+            return digitalDatas;
+        }
+
+        public async Task<List<IOAnalogData>> getAllAnalogTagValues(Guid userId, Guid tagId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            AnalogInput analogInput = _analogInputRepository.Read(tagId) ?? throw new ResourceNotFoundException("There is no analog tag with this id!");
+            if (user.AnalogInputs.All(tag => tag.Id != tagId))
+                throw new InvalidInputException("User cannot access other users tags!");
+
+            return await _ioAnalogDataRepository.FindByTagId(tagId);
+        }
+
+        public async Task<List<IODigitalData>> getAllDigitalTagValues(Guid userId, Guid tagId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            DigitalInput digitalInput = _digitalInputRepository.Read(tagId) ?? throw new ResourceNotFoundException("There is no digital tag with this id!");
+            if (user.AnalogInputs.All(tag => tag.Id != tagId))
+                throw new InvalidInputException("User cannot access other users tags!");
+
+            return await _ioDigitalDataRepository.FindByTagId(tagId);
         }
 
 

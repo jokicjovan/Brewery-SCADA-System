@@ -1,5 +1,6 @@
 ﻿using Brewery_SCADA_System.Database;
 using Brewery_SCADA_System.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Brewery_SCADA_System.Repository
 {
@@ -18,6 +19,19 @@ namespace Brewery_SCADA_System.Repository
                 _context.Remove(alarmAlert);
                 _context.SaveChanges();
             }
+        }
+
+        public async Task<IEnumerable<AlarmAlert>> FindByIdByTime(Guid id, DateTime from, DateTime to)
+        {
+            return await _entities
+                .Where(e => e.AlarmId == id && e.Timestamp >= from && e.Timestamp <= to)
+                .ToListAsync();
+        }
+
+        public async Task<List<AlarmAlert>> FindByAlarmId(Guid id)
+        {
+            return await _entities
+                .Where(e => e.AlarmId == id).ToListAsync();
         }
     }
 }

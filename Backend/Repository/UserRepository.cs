@@ -16,7 +16,7 @@ namespace Brewery_SCADA_System.Repository
         public async Task<User> FindByIdWithTags(Guid id)
         {
             return await _entities
-                .Include(e => e.AnalogInputs)
+                .Include(e => e.AnalogInputs).ThenInclude(e => e.Alarms)
                 .Include(e => e.DigitalInputs)
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
