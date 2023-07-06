@@ -13,9 +13,9 @@ namespace Brewery_SCADA_System.Hubs
 
         }
 
-        public async Task SendDataToAllClients(AlarmAlert data)
+        public async Task SendAlarmDataToAllClients(AlarmAlert data)
         {
-            await Clients.All.ReceiveData(data);
+            await Clients.All.ReceiveAlarmData(data);
         }
     }
 }

@@ -239,7 +239,7 @@ namespace Brewery_SCADA_System.Services
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
 
-                                await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveData(alarmAlert);
+                                await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAlarmData(alarmAlert);
                             }
                         }
 

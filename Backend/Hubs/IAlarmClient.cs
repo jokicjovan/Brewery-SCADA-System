@@ -5,6 +5,6 @@ namespace Brewery_SCADA_System.Hubs
 {
     public interface IAlarmClient
     {
-        Task ReceiveData(AlarmAlert data);
+        Task ReceiveAlarmData(AlarmAlert data);
     }
 }
