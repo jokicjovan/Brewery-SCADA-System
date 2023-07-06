@@ -36,5 +36,10 @@ namespace Brewery_SCADA_System.Services
             createdUser.Role = user.Role;
             return _userRepository.Create(createdUser);
         }
+        public async Task <User> Get(Guid id)
+        {
+            User user = await _userRepository.FindByIdWithTags(id);
+            return user == null ? throw new ResourceNotFoundException("User does not exist") : user;
+        }
     }
 }

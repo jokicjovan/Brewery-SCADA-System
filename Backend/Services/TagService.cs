@@ -79,6 +79,42 @@ namespace Brewery_SCADA_System.Services
             return input;
         }
 
+        public async Task<AnalogInput> getAnalogInput(Guid tagId, Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId);
+            if (user == null)
+                throw new InvalidInputException("User does not exist");
+
+            AnalogInput tag = _analogInputRepository.Read(tagId);
+            if (tag == null)
+                throw new InvalidInputException("Tag does not exist");
+
+            if (!user.AnalogInputs.Any(input => input.Id == tagId))
+                throw new ResourceNotFoundException("Tag does net exist");
+
+            return tag;
+
+        }
+
+        public async Task<DigitalInput> getDigitalInput(Guid tagId, Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId);
+            if (user == null)
+                throw new InvalidInputException("User does not exist");
+
+            DigitalInput tag = _digitalInputRepository.Read(tagId);
+            if (tag == null)
+                throw new InvalidInputException("Tag does not exist");
+
+            if (!user.AnalogInputs.Any(input => input.Id == tagId))
+                throw new ResourceNotFoundException("Tag does net exist");
+
+            return tag;
+
+        }
+
+
+
         public async Task deleteDigitalInputAsync(Guid tagId, Guid userId)
         {
             User user = await _userRepository.FindByIdWithTags(userId);
@@ -89,7 +125,7 @@ namespace Brewery_SCADA_System.Services
             if (tag == null)
                 throw new InvalidInputException("Tag does not exist");
 
-            if (!user.DigitalInputs.Contains(tag))
+            if (!user.AnalogInputs.Any(input => input.Id == tagId))
                 throw new ResourceNotFoundException("Tag does net exist");
 
             user.DigitalInputs.Remove(tag);
@@ -218,7 +254,7 @@ namespace Brewery_SCADA_System.Services
                         IOAnalogData ioAnalogData = new IOAnalogData
                         {
                             Id = new Guid(),
-                            Address = device.Address,
+                            IOAddress = device.Address,
                             Value = device.Value,
                             Timestamp = DateTime.Now,
                             TagId = analogInput.Id
@@ -239,7 +275,9 @@ namespace Brewery_SCADA_System.Services
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
 
-                                await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAlarmData(alarmAlert);
+                                AlarmReportsDTO report = new AlarmReportsDTO(analogInputAlarm, alarmAlert.Timestamp);
+
+                                await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAlarmData(report);
                             }
                         }
 
@@ -284,7 +322,7 @@ namespace Brewery_SCADA_System.Services
                         IODigitalData ioDigitalData = new IODigitalData
                         {
                             Id = new Guid(),
-                            Address = device.Address,
+                            IOAddress = device.Address,
                             Value = device.Value,
                             Timestamp = DateTime.Now,
                             TagId = digitalInput.Id

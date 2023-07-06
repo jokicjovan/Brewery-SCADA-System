@@ -17,13 +17,15 @@ namespace Brewery_SCADA_System.Controllers
     {
         private readonly IDeviceService _deviceService;
         private readonly ITagService _tagService;
+        private readonly IUserService _userService;
 
-        public TagController(IDeviceService deviceService, ITagService tagService)
+        public TagController(IDeviceService deviceService, ITagService tagService, IUserService userService)
         {
             _deviceService = deviceService;
             _tagService = tagService;
+            _userService = userService;
         }
-        
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> addAnalogInput([FromBody] AnalogInputDTO analogInputDTO)
@@ -33,7 +35,7 @@ namespace Brewery_SCADA_System.Controllers
             {
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _tagService.addAnalogInputAsync(new Models.AnalogInput(analogInputDTO), Guid.Parse(userId));
+                await _tagService.addAnalogInputAsync(new AnalogInput(analogInputDTO), Guid.Parse(userId));
                 return Ok();
             }
             else
@@ -120,6 +122,45 @@ namespace Brewery_SCADA_System.Controllers
                 else
                     throw new InvalidInputException("Invalid tag type");
                 return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult> getMyInputs()
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                User user = await _userService.Get(Guid.Parse(userId));
+                return Ok(new TagsDTO(user.AnalogInputs, user.DigitalInputs));
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        [Route("{id}")]
+        public async Task<ActionResult> getAnalogInput(Guid id)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                User user = await _userService.Get(Guid.Parse(userId)); // TODO Pogledati
+
+                return Ok(new TagsDTO(user.AnalogInputs, user.DigitalInputs));
             }
             else
             {

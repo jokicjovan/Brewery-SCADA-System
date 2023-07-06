@@ -14,7 +14,7 @@ namespace Brewery_SCADA_System.Services
         private readonly IAnalogInputRepository _analogInputRepository;
         private readonly IUserRepository _userRepository;
         private readonly IAlarmAlertRepository _alarmAlertRepository;
-        
+
         public AlarmService(IAlarmRepository alarmRepository, IAnalogInputRepository analogInputRepository, IUserRepository userRepository, IAlarmAlertRepository alarmAlertRepository)
         {
             _alarmRepository = alarmRepository;
@@ -38,6 +38,7 @@ namespace Brewery_SCADA_System.Services
                 Type = alarmDto.Type,
                 Unit = alarmDto.Unit,
                 Priority = alarmDto.Priority,
+                AnalogInput = analogInput,
             };
 
             analogInput.Alarms.Add(alarm);
@@ -69,11 +70,7 @@ namespace Brewery_SCADA_System.Services
                     List<AlarmAlert> alarmAlerts = (List<AlarmAlert>)await _alarmAlertRepository.FindByIdByTime(analogInputAlarm.Id, timeFrom, timeTo);
                     List<AlarmReportsDTO> alarmReportsDtos = alarmAlerts.Select(item => new AlarmReportsDTO
                     {
-                        AlarmId = analogInputAlarm.Id,
-                        Type = analogInputAlarm.Type,
-                        Priority = analogInputAlarm.Priority,
-                        EdgeValue = analogInputAlarm.EdgeValue,
-                        Unit = analogInputAlarm.Unit,
+                        Alarm= analogInputAlarm,
                         Timestamp = item.Timestamp
                     }).ToList();
                     alarmReports.AddRange(alarmReportsDtos);
@@ -96,11 +93,7 @@ namespace Brewery_SCADA_System.Services
                     List<AlarmAlert> alarmAlerts = (List<AlarmAlert>)await _alarmAlertRepository.FindByAlarmId(analogInputAlarm.Id);
                     List<AlarmReportsDTO> alarmReportsDtos = alarmAlerts.Select(item => new AlarmReportsDTO
                     {
-                        AlarmId = analogInputAlarm.Id,
-                        Type = analogInputAlarm.Type,
-                        Priority = analogInputAlarm.Priority,
-                        EdgeValue = analogInputAlarm.EdgeValue,
-                        Unit = analogInputAlarm.Unit,
+                        Alarm = analogInputAlarm,
                         Timestamp = item.Timestamp
                     }).ToList();
                     alarmReports.AddRange(alarmReportsDtos);

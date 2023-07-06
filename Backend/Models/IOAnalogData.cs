@@ -3,7 +3,7 @@
     public class IOAnalogData : IBaseEntity
     {
         public Guid Id { get; set; }
-        public String Address { get; set; }
+        public String IOAddress { get; set; }
         public Double Value { get; set; }
         public DateTime Timestamp { get; set; }
         public Guid TagId { get; set; }
@@ -12,10 +12,10 @@
             
         }
 
-        public IOAnalogData(Guid id, string address, double value, DateTime timestamp, Guid tagId)
+        public IOAnalogData(Guid id, string iOAddress, double value, DateTime timestamp, Guid tagId)
         {
             Id = id;
-            Address = address;
+            IOAddress = iOAddress;
             Value = value;
             Timestamp = timestamp;
             TagId = tagId;

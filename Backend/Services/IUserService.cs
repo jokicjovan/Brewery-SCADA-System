@@ -7,5 +7,6 @@ namespace Brewery_SCADA_System.Services
     {
         public Task<User> Authenticate(User user);
         public Task<User> CreateUser(User user);
+        Task<User> Get(Guid id);
     }
 }

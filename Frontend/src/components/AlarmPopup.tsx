@@ -22,7 +22,7 @@ const Alarm = ({ alarmData }: { alarmData: AlarmData }) => {
     return visible ?
         <div className="alarm">
             <button className="delete-button" onClick={handleDelete}>X</button>
-            <div>{alarmData.alarmId}</div>
+            <div>{alarmData.alarm.analogInput.ioAddress}</div>
             <div>{new Date(alarmData.timestamp).toLocaleString()}</div>
         </div> : null;
 };
@@ -35,6 +35,7 @@ export default function AlarmPopup() {
 
         signalRAlarmService.receiveAlarmData((newAlarmData : AlarmData) => {
             setAlarmsData((prevAlarmsData) => [...prevAlarmsData, newAlarmData]);
+            console.log(newAlarmData.alarm.analogInput.ioAddress);
         });
     }, []);
 

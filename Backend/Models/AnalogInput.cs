@@ -1,4 +1,5 @@
 ﻿using Brewery_SCADA_System.DTO;
+using System.Text.Json.Serialization;
 
 namespace Brewery_SCADA_System.Models
 {
@@ -9,11 +10,13 @@ namespace Brewery_SCADA_System.Models
         public string Driver { get; set; }
         public string IOAddress { get; set; }
         public int ScanTime { get; set; }
-        public List<Alarm> Alarms { get; set; }
         public bool ScanOn { get; set; }
         public double LowLimit { get; set; }
         public double HighLimit { get; set; }
         public string Unit { get; set; }
+        [JsonIgnore]
+        public List<Alarm> Alarms { get; set; }
+        [JsonIgnore]
         public List<User> Users { get; set; }
 
         public AnalogInput(string description, string driver, string iOAddress, int scanTime, List<Alarm> alarms, bool scanOn, double lowLimit, double highLimit, string unit)

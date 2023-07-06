@@ -1,6 +1,6 @@
 export interface AnalogData {
     id: string;
-    address: string;
+    ioAddress: string;
     value: number;
     timestamp: string;
     tagId: string;
@@ -8,14 +8,22 @@ export interface AnalogData {
 
 export interface DigitalData {
     id: string;
-    address: string;
+    ioAddress: string;
     value: number;
     timestamp: string;
     tagId: string;
 }
+export interface Alarm{
+    id:string;
+    type:string;
+    priority:string;
+    edgeValue:number;
+    unit:string;
+    analogInput:AnalogData;
+}
 
 export interface AlarmData {
-    id: string;
-    alarmId: string;
+    alarm:Alarm;
     timestamp: string;
 }
+
