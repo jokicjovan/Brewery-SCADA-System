@@ -1,3 +1,5 @@
+import TagsCRUD from "./TagsCRUD.tsx";
+
 export default function Home(){
-    return <></>
+    return <TagsCRUD></TagsCRUD>
 }

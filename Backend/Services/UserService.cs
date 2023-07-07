@@ -33,7 +33,7 @@ namespace Brewery_SCADA_System.Services
             createdUser.Surname = user.Surname;
             createdUser.Email = user.Email;
             createdUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            createdUser.Role = user.Role;
+            createdUser.Discriminator = user.Discriminator;
             return _userRepository.Create(createdUser);
         }
         public async Task <User> Get(Guid id)

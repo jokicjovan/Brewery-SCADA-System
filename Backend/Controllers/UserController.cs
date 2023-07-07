@@ -30,7 +30,7 @@ namespace Brewery_SCADA_System.Controllers
             User authenticatedUser = await _userService.Authenticate(userToAuthenticate);
 
             ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Role, authenticatedUser.Role));
+            identity.AddClaim(new Claim(ClaimTypes.Role, authenticatedUser.Discriminator));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, authenticatedUser.Id.ToString()));
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
             return Ok("Logged in successfully!");
