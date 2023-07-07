@@ -37,11 +37,22 @@ namespace Brewery_SCADA_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult register([FromBody] UserDTO userDto)
+        [Authorize(Roles =("Admin"))]
+        public async Task<ActionResult> register([FromBody] UserDTO userDto)
         {
-            User user = new User(userDto.Name, userDto.Surname, userDto.Email, userDto.Password, "User");
-            _userService.CreateUser(user);
-            return Ok("Registration successful!");
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                User user = new User(userDto.Name, userDto.Surname, userDto.Email, userDto.Password, "User",await _userService.Get(Guid.Parse(userId)));
+                _userService.CreateUser(user);
+                return Ok("Registration successful!");
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
         }
 
         [HttpPost]

@@ -32,6 +32,7 @@ namespace Brewery_SCADA_System.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Device>().HasData(new Device("111111",10), new Device("222222", 10),new Device("333333", 10), new Device("444444", 10),new Device("666666", 10));
+            modelBuilder.Entity<User>().HasData(new User(Guid.NewGuid(),"Admin", "Admin", "admin@example.com", BCrypt.Net.BCrypt.HashPassword("admin"), "Admin", null));
 
             modelBuilder.Entity<User>()
                .HasIndex(c => new { c.Email })

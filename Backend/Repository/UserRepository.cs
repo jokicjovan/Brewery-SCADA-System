@@ -20,5 +20,10 @@ namespace Brewery_SCADA_System.Repository
                 .Include(e => e.DigitalInputs)
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
+
+        public async Task<List<User>> GetAllByCreatedBy(Guid userId)
+        {
+            return await _entities.Where(e=>e.CreatedBy.Id == userId).ToListAsync();
+        }
     }
 }

@@ -11,15 +11,49 @@
         public List<AnalogInput> AnalogInputs { get; set; }
         public List<DigitalInput> DigitalInputs { get; set; }
 
-        public User(string name, string surname, string email, string password, string role)
+        public User? CreatedBy { get; set; }
+
+        public User(string name, string surname, string email, string password, string role, User createdBy)
         {
             Name = name;
             Surname = surname;
             Email = email;
             Password = password;
             Role = role;
-            AnalogInputs = new List<AnalogInput>();
-            DigitalInputs = new List<DigitalInput>();
+            if (createdBy != null)
+            {
+                AnalogInputs = createdBy.AnalogInputs;
+                DigitalInputs = createdBy.DigitalInputs;
+            }
+            else
+            {
+                AnalogInputs = new List<AnalogInput>();
+                DigitalInputs = new List<DigitalInput>();
+            }
+
+            CreatedBy = createdBy;
+        }
+
+        public User(Guid id,string name, string surname, string email, string password, string role, User createdBy)
+        {
+            Id = id;
+            Name = name;
+            Surname = surname;
+            Email = email;
+            Password = password;
+            Role = role;
+            if (createdBy != null)
+            {
+                AnalogInputs = createdBy.AnalogInputs;
+                DigitalInputs = createdBy.DigitalInputs;
+            }
+            else
+            {
+                AnalogInputs = new List<AnalogInput>();
+                DigitalInputs = new List<DigitalInput>();
+            }
+
+            CreatedBy = createdBy;
         }
 
         public User()
