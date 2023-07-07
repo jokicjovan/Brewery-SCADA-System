@@ -57,6 +57,7 @@ namespace Brewery_SCADA_System.Services
             input.Users.Add(user);
             user.AnalogInputs.Add(input);
             User saved = _userRepository.Update(user);
+            UpdatePermissionsAnalogInputs(saved.AnalogInputs.Last(), userId);
             if (input.ScanOn)
                 StartAnalogTagReading(saved.AnalogInputs.Last().Id);
             return input;
@@ -74,9 +75,30 @@ namespace Brewery_SCADA_System.Services
 
             user.DigitalInputs.Add(input);
             User saved = _userRepository.Update(user);
+            UpdatePermissionsDigitalInputs(saved.DigitalInputs.Last(), userId);
             if (input.ScanOn)
                 StartDigitalTagReading(saved.DigitalInputs.Last().Id);
             return input;
+        }
+
+        private async void UpdatePermissionsAnalogInputs(AnalogInput input,Guid userId)
+        {
+            List<User> users=await _userRepository.GetAllByCreatedBy(userId);
+            foreach (User user in users)
+            {
+                user.AnalogInputs.Add(input);
+                _userRepository.Update(user);
+            }
+        }
+
+        private async void UpdatePermissionsDigitalInputs(DigitalInput input, Guid userId)
+        {
+            List<User> users = await _userRepository.GetAllByCreatedBy(userId);
+            foreach (User user in users)
+            {
+                user.DigitalInputs.Add(input);
+                _userRepository.Update(user);
+            }
         }
 
         public async Task<AnalogInput> getAnalogInput(Guid tagId, Guid userId)
@@ -125,10 +147,16 @@ namespace Brewery_SCADA_System.Services
             if (tag == null)
                 throw new InvalidInputException("Tag does not exist");
 
-            if (!user.AnalogInputs.Any(input => input.Id == tagId))
+            if (!user.DigitalInputs.Any(input => input.Id == tagId))
                 throw new ResourceNotFoundException("Tag does net exist");
 
             user.DigitalInputs.Remove(tag);
+            List<User> users = await _userRepository.GetAllByCreatedBy(userId);
+            foreach (User u in users)
+            {
+                u.DigitalInputs.Remove(tag);
+                _userRepository.Update(user);
+            }
             _userRepository.Update(user);
             _digitalInputRepository.Delete(tag.Id);
 
@@ -213,6 +241,12 @@ namespace Brewery_SCADA_System.Services
             user.AnalogInputs.Remove(tag);
             await _ioAnalogDataRepository.DeleteByTagId(tagId);
             _userRepository.Update(user);
+            List<User> users = await _userRepository.GetAllByCreatedBy(userId);
+            foreach (User u in users)
+            {
+                u.AnalogInputs.Remove(tag);
+                _userRepository.Update(user);
+            }
             _analogInputRepository.Delete(tagId);
             foreach (var alarm in tag.Alarms)
             {
