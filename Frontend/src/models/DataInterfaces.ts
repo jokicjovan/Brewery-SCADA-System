@@ -27,3 +27,8 @@ export interface AlarmData {
     timestamp: string;
 }
 
+export interface MyTags{
+    analogInputs:AnalogData[];
+    digitalInputs:DigitalData[];
+}
+

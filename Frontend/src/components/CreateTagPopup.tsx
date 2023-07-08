@@ -17,7 +17,7 @@ import {environment} from "../utils/Environment.tsx";
 
 
 
-export function CreateTagPopup(){
+export function CreateTagPopup({ closeModal }){
 
     //Global
     const [tabIndex, setTabIndex] = useState(0);
@@ -97,7 +97,7 @@ export function CreateTagPopup(){
             unit:unit
         }).then(res => {
             if (res.status === 200){
-                console.log("everythingOK");
+                closeModal();
             }
         }).catch((error) => {
             console.log(error);
@@ -180,7 +180,7 @@ export function CreateTagPopup(){
             scanOn:scanOnDigital,
         }).then(res => {
             if (res.status === 200){
-                console.log("everythingOK");
+                closeModal();
             }
         }).catch((error) => {
             console.log(error);
