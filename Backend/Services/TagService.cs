@@ -309,8 +309,12 @@ namespace Brewery_SCADA_System.Services
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
 
-                                AlarmReportsDTO report = new AlarmReportsDTO(analogInputAlarm, alarmAlert.Timestamp);
+                                using (StreamWriter outputFile = new StreamWriter("alarmLog.txt", true))
+                                {
+                                    await outputFile.WriteAsync("Alarm (id: " + alarmAlert.AlarmId + ") triggered for tag (id: " + ioAnalogData.TagId + ") at " + alarmAlert.Timestamp + "\n");
+                                }
 
+                                AlarmReportsDTO report = new AlarmReportsDTO(analogInputAlarm, alarmAlert.Timestamp, device.Value);
                                 await _alarmHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAlarmData(report);
                             }
                         }

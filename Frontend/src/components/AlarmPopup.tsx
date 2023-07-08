@@ -5,7 +5,7 @@ import "./AlarmPopup.css"
 import toast from "react-hot-toast";
 
 export default function AlarmPopup() {
-    const [alarmsData, setAlarmsData] = useState<AlarmData[]>([]);
+    const [, setAlarmsData] = useState<AlarmData[]>([]);
 
     useEffect(() => {
         signalRAlarmService.startConnection();
@@ -40,7 +40,7 @@ export default function AlarmPopup() {
                         <b>Edge value:</b> {newAlarmData.alarm.edgeValue}
                     </span>
                     <span>
-                        <b>Current value:</b> {newAlarmData.alarm.analogInput.value}
+                        <b>Current value:</b> {newAlarmData.value}
                     </span>
                     <span>
                         <b>Time:</b> {new Date(newAlarmData.timestamp).toLocaleString()}

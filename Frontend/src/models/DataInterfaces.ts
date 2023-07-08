@@ -13,17 +13,30 @@ export interface DigitalData {
     timestamp: string;
     tagId: string;
 }
+
+export interface AnalogInput {
+    id: string;
+    description: string;
+    driver: string;
+    ioAddress: string;
+    scanTime: boolean;
+    lowLimit: number;
+    highLimit: number;
+    unit: string;
+}
+
 export interface Alarm{
     id:string;
     type:string;
     priority:string;
     edgeValue:number;
     unit:string;
-    analogInput:AnalogData;
+    analogInput:AnalogInput;
 }
 
 export interface AlarmData {
     alarm:Alarm;
     timestamp: string;
+    value: number;
 }
 
