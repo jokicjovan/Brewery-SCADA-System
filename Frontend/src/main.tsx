@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {createBrowserRouter, Navigate, RouterProvider,} from "react-router-dom"
 import './index.css'
@@ -10,6 +9,7 @@ import {AuthProvider} from "./utils/AuthContext.tsx";
 import {createTheme, ThemeProvider} from "@mui/material";
 import axios from "axios";
 import Register from "./pages/Register.tsx";
+import {Toaster} from "react-hot-toast";
 
 axios.defaults.withCredentials = true
 
@@ -33,11 +33,12 @@ const router = createBrowserRouter([
 ])
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  //<React.StrictMode>
       <ThemeProvider theme={theme}>
           <AuthProvider>
             <RouterProvider router={router}/>
+            <Toaster position="bottom-right"/>
           </AuthProvider>
       </ThemeProvider>
-  </React.StrictMode>,
+  //</React.StrictMode>,
 )

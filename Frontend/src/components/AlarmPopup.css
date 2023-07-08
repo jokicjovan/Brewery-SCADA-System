@@ -1,22 +1,12 @@
-.alarm-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}
-
 .alarm {
     display: flex;
     flex-direction: column;
-    background-color: #910000;
-    color:white;
-    padding: 10px;
-    margin-bottom: 10px;
 }
 
 .delete-button {
     background-color: transparent;
     border: none;
-    color: #ffffff;
+    color: black;
     font-weight: bold;
     font-size: 14px;
     cursor: pointer;
@@ -24,5 +14,5 @@
 }
 
 .delete-button:hover {
-    color: #000000;
+    color: red;
 }
