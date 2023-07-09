@@ -1,4 +1,5 @@
 ﻿using Brewery_SCADA_System.DTO;
+using System.Text.Json.Serialization;
 
 namespace Brewery_SCADA_System.Models
 {
@@ -10,6 +11,7 @@ namespace Brewery_SCADA_System.Models
         public string IOAddress { get; set; }
         public int ScanTime { get; set; }
         public bool ScanOn { get; set; }
+        [JsonIgnore]
         public List<User> Users { get; set; }
 
         public DigitalInput(string description, string driver, string iOAddress, int scanTime, bool scanOn)

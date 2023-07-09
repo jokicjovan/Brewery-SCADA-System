@@ -15,10 +15,12 @@ namespace Brewery_SCADA_System.Controllers
     public class AlarmController : ControllerBase
     {
         private readonly IAlarmService _alarmService;
+        private readonly ITagService _tagService;
 
-        public AlarmController(IAlarmService alarmService)
+        public AlarmController(IAlarmService alarmService, ITagService tagService)
         {
             _alarmService = alarmService;
+            _tagService = tagService;
         }
 
 
@@ -65,6 +67,24 @@ namespace Brewery_SCADA_System.Controllers
                 return Forbid("Authentication error!");
             }
 
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> getByTag([FromQuery] Guid tagId)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                AnalogInput input= await _tagService.getAnalogInput(tagId, Guid.Parse(userId));
+                return Ok(input.Alarms);
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
         }
     }
 }

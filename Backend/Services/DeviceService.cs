@@ -51,5 +51,10 @@ namespace Brewery_SCADA_System.Services
             }).Start();
             
         }
+
+        public List<String> GetAllAddresses()
+        {
+            return _deviceRepository.ReadAll().Select(device => device.Address).ToList();
+        }
     }
 }

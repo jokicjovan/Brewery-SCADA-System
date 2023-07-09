@@ -40,3 +40,8 @@ export interface AlarmData {
     value: number;
 }
 
+export interface MyTags{
+    analogInputs:AnalogData[];
+    digitalInputs:DigitalData[];
+}
+
