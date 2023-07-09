@@ -16,6 +16,8 @@ import {Delete, AddAlert, Add, Notifications} from "@material-ui/icons";
 import axios from "axios";
 import {environment} from "../utils/Environment";
 import {MyTags} from "../models/DataInterfaces";
+import {CreateAlarmPopup} from "../components/CreateAlarmPopup";
+import AlarmList from "../components/AlarmList";
 
 export default function TagsCRUD() {
     const style = {
@@ -31,6 +33,8 @@ export default function TagsCRUD() {
     };
 
     const [open, setOpen] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState(false);
+    const [currentTag, setCurrentTag] = React.useState({});
     const [tags, setTags] = useState({analogInputs:[],digitalInputs:[]});
     const handleOpen = () => {
         setOpen(true);
@@ -59,6 +63,13 @@ export default function TagsCRUD() {
             });
         });
     }
+    function switchValue(id:string,type:number){
+        axios.post(environment + `/api/Tag/switchTag?type=`+ type+"&tagId="+id).then(()=>{
+            axios.get(environment + `/api/Tag/getMyInputs`).then(response=>{
+                setTags(response.data);
+            });
+        });
+    }
 
 
 
@@ -73,11 +84,22 @@ export default function TagsCRUD() {
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 open={open}
-                onClose={handleClose}
+                onClose={()=>{setOpen(false)}}
                 closeAfterTransition
             >
                 <Box sx={style}>
                     <CreateTagPopup closeModal={handleClose}></CreateTagPopup>
+                </Box>
+            </Modal>
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={openModal}
+                onClose={()=>{setOpenModal(false)}}
+                closeAfterTransition
+            >
+                <Box sx={style}>
+                    <AlarmList tag={currentTag}></AlarmList>
                 </Box>
 
             </Modal>
@@ -165,12 +187,13 @@ export default function TagsCRUD() {
                                     <IconButton aria-label="delete" onClick={()=>{deleteAnalog(device.id);}}>
                                         <Delete></Delete>
                                     </IconButton>
-                                    <IconButton aria-label="add alert">
+                                    <IconButton aria-label="add alert" onClick={()=>{setCurrentTag(device);setOpenModal(true);}}>
                                         <Notifications></Notifications>
                                     </IconButton>
                                     <Switch sx={{display:"flex",flexDirection:"column",alignSelf:"center",justifyContent:"center"}}
-                                            checked={true}
+                                            checked={device.scanOn}
                                             inputProps={{ 'aria-label': 'controlled' }}
+                                            onChange={()=>{switchValue(device.id,0);}}
                                     />
                                 </Grid>
                             </Grid>
@@ -243,12 +266,10 @@ export default function TagsCRUD() {
                                     <IconButton aria-label="delete" onClick={()=>{deleteDigital(device.id);}}>
                                         <Delete></Delete>
                                     </IconButton>
-                                    <IconButton aria-label="add alert">
-                                        <Notifications></Notifications>
-                                    </IconButton>
                                     <Switch sx={{display:"flex",flexDirection:"column",alignSelf:"center",justifyContent:"center"}}
-                                            checked={true}
+                                            checked={device.scanOn}
                                             inputProps={{ 'aria-label': 'controlled' }}
+                                            onChange={()=>{switchValue(device.id,1);}}
                                     />
                                 </Grid>
                             </Grid>
