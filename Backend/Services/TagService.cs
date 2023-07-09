@@ -190,6 +190,48 @@ namespace Brewery_SCADA_System.Services
 
             return analogDatas;
         }
+        public async Task<IOAnalogData> getLatestAnalogTagValue(Guid tagId,Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            IOAnalogData analogData = await _ioAnalogDataRepository.FindLatestById(tagId);
+            return analogData;
+        }
+
+        public async Task<IODigitalData> getLatestDigitalTagValue(Guid tagId, Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            IODigitalData digitalData = await _ioDigitalDataRepository.FindLatestById(tagId);
+            return digitalData;
+        }
+
+        public async Task updateAnalog(Guid id, double value, Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            AnalogInput tag = _analogInputRepository.Read(id);
+            IOAnalogData ioAnalogData = new IOAnalogData
+            {
+                Id = new Guid(),
+                IOAddress = tag.IOAddress,
+                Value = value,
+                Timestamp = DateTime.Now,
+                TagId = tag.Id
+            };
+            _ioAnalogDataRepository.Create(ioAnalogData);
+        }
+        public async Task updateDigital(Guid id, double value, Guid userId)
+        {
+            User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
+            DigitalInput tag = _digitalInputRepository.Read(id);
+            IODigitalData ioDigitalData = new IODigitalData
+            {
+                Id = new Guid(),
+                IOAddress = tag.IOAddress,
+                Value = value,
+                Timestamp = DateTime.Now,
+                TagId = tag.Id
+            };
+            _ioDigitalDataRepository.Create(ioDigitalData);
+        }
 
         public async Task<List<IODigitalData>> getLatestDigitalTagsValues(Guid userId)
         {
@@ -365,7 +407,7 @@ namespace Brewery_SCADA_System.Services
                             Timestamp = DateTime.Now,
                             TagId = digitalInput.Id
                         };
-                        _digitalInputRepository.Create(digitalInput);
+                        _ioDigitalDataRepository.Create(ioDigitalData);
 
                         await _tagHub.Clients.Users(digitalInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveDigitalData(ioDigitalData);
                     }

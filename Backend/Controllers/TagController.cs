@@ -139,7 +139,20 @@ namespace Brewery_SCADA_System.Controllers
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
                 User user = await _userService.Get(Guid.Parse(userId));
-                return Ok(new TagsDTO(user.AnalogInputs, user.DigitalInputs));
+                List<AnalogInputValueDTO> analogInputValueDTOs = new List<AnalogInputValueDTO>();
+                foreach (AnalogInput input in user.AnalogInputs)
+                {
+                    IOAnalogData data = await _tagService.getLatestAnalogTagValue(input.Id, user.Id);
+                    analogInputValueDTOs.Add(new AnalogInputValueDTO(input, data == null ? 0 : data.Value));
+                }
+
+                List<DigitalInputValueDTO> digitalInputValueDTOs = new List<DigitalInputValueDTO>();
+                foreach (DigitalInput input in user.DigitalInputs)
+                {
+                    IODigitalData data = await _tagService.getLatestDigitalTagValue(input.Id, user.Id);
+                    digitalInputValueDTOs.Add(new DigitalInputValueDTO(input, data==null?0:data.Value));
+                }
+                return Ok(new TagsDTO(analogInputValueDTOs, digitalInputValueDTOs));
             }
             else
             {
@@ -147,25 +160,43 @@ namespace Brewery_SCADA_System.Controllers
             }
         }
 
-
-        [HttpGet]
-        [Authorize]
-        [Route("{id}")]
-        public async Task<ActionResult> getAnalogInput(Guid id)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> updateAnalogInput([FromBody] AddressValueDTO analogValue)
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
             if (result.Succeeded)
             {
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                User user = await _userService.Get(Guid.Parse(userId)); // TODO Pogledati
-
-                return Ok(new TagsDTO(user.AnalogInputs, user.DigitalInputs));
+                await _tagService.updateAnalog(analogValue.Id,analogValue.Value, Guid.Parse(userId));
+                return Ok();
             }
             else
             {
                 return Forbid("Authentication error!");
             }
+
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> updateDigitalInput([FromBody] AddressValueDTO analogValue)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result.Succeeded)
+            {
+                ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
+                String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _tagService.updateDigital(analogValue.Id, analogValue.Value, Guid.Parse(userId));
+                return Ok();
+            }
+            else
+            {
+                return Forbid("Authentication error!");
+            }
+
+        }
+
     }
 }

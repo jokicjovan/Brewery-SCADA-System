@@ -18,5 +18,9 @@ namespace Brewery_SCADA_System.Services
         Task<List<IODigitalData>> getAllDigitalTagValues(Guid userId, Guid tagId);
         Task<DigitalInput> getDigitalInput(Guid tagId, Guid userId);
         Task<AnalogInput> getAnalogInput(Guid tagId, Guid userId);
+        Task<IOAnalogData> getLatestAnalogTagValue(Guid tagId, Guid userId);
+        Task<IODigitalData> getLatestDigitalTagValue(Guid tagId, Guid userId);
+        Task updateAnalog(Guid id, double value, Guid userId);
+        Task updateDigital(Guid id, double value, Guid userId);
     }
 }
