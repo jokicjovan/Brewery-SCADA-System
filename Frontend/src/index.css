@@ -8,4 +8,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  background-image:url('src/assets/background.png');
+  background-size: 500px 500px;
+}
+:body{
+  background-color: transparent;
 }

@@ -12,7 +12,7 @@
             
         }
 
-        public IODigitalData(Guid id, string iOAddress, double value, DateTime timestamp, Guid tagId)
+        public IODigitalData(Guid id, string iOAddress, Double value, DateTime timestamp, Guid tagId)
         {
             Id = id;
             IOAddress = iOAddress;

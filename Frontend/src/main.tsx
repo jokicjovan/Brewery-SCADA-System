@@ -10,6 +10,8 @@ import {createTheme, ThemeProvider} from "@mui/material";
 import axios from "axios";
 import Register from "./pages/Register.tsx";
 import {Toaster} from "react-hot-toast";
+import Reports from "./pages/Reports";
+import {useLayoutEffect} from "react";
 
 axios.defaults.withCredentials = true
 
@@ -29,12 +31,14 @@ const router = createBrowserRouter([
     {path:"/login", element: <UnauthenticatedRoute><Login/></UnauthenticatedRoute>},
     {path:"/register", element: <AuthenticatedRoute><Register/></AuthenticatedRoute>},
     {path:"/home", element: <AuthenticatedRoute><Home/></AuthenticatedRoute>},
+    {path:"/reports", element: <AuthenticatedRoute><Reports/></AuthenticatedRoute>},
     {path:"*", element: <Navigate to="/home" replace />},
 ])
 
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   //<React.StrictMode>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme} >
           <AuthProvider>
             <RouterProvider router={router}/>
             <Toaster position="bottom-right"/>

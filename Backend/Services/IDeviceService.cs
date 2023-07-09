@@ -4,7 +4,7 @@ namespace Brewery_SCADA_System.Services
 {
     public interface IDeviceService
     {
-        void StartSimulation();
+        Task StartSimulation();
         List<String> GetAllAddresses();
     }
 }

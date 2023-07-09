@@ -81,7 +81,7 @@ namespace Brewery_SCADA_System.Services
             return input;
         }
 
-        private async void UpdatePermissionsAnalogInputs(AnalogInput input,Guid userId)
+        private async Task UpdatePermissionsAnalogInputs(AnalogInput input,Guid userId)
         {
             List<User> users=await _userRepository.GetAllByCreatedBy(userId);
             foreach (User user in users)
@@ -91,7 +91,7 @@ namespace Brewery_SCADA_System.Services
             }
         }
 
-        private async void UpdatePermissionsDigitalInputs(DigitalInput input, Guid userId)
+        private async Task UpdatePermissionsDigitalInputs(DigitalInput input, Guid userId)
         {
             List<User> users = await _userRepository.GetAllByCreatedBy(userId);
             foreach (User user in users)
@@ -218,7 +218,7 @@ namespace Brewery_SCADA_System.Services
         {
             User user = await _userRepository.FindByIdWithTags(userId) ?? throw new ResourceNotFoundException("User not found!");
             DigitalInput digitalInput = _digitalInputRepository.Read(tagId) ?? throw new ResourceNotFoundException("There is no digital tag with this id!");
-            if (user.AnalogInputs.All(tag => tag.Id != tagId))
+            if (user.DigitalInputs.All(tag => tag.Id != tagId))
                 throw new InvalidInputException("User cannot access other users tags!");
 
             return await _ioDigitalDataRepository.FindByTagId(tagId);
@@ -267,7 +267,7 @@ namespace Brewery_SCADA_System.Services
                 StartAnalogTagReading(tagId);
         }
 
-        private void StartAnalogTagReading(Guid tagId)
+        private async Task StartAnalogTagReading(Guid tagId)
         {
             new Thread(async () =>
             {
@@ -339,7 +339,7 @@ namespace Brewery_SCADA_System.Services
                 StartDigitalTagReading(tagId);
         }
 
-        private void StartDigitalTagReading(Guid tagId)
+        private async Task StartDigitalTagReading(Guid tagId)
         {
             new Thread(async () =>
             {

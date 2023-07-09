@@ -25,7 +25,7 @@ namespace Brewery_SCADA_System.Services
             _deviceRepository = deviceRepository;
         }
 
-        public void StartSimulation()
+        public async Task StartSimulation()
         {
             new Thread(async() =>
             {
@@ -39,10 +39,20 @@ namespace Brewery_SCADA_System.Services
                     {
                         lock (dbContextLock)
                         {
-                            if (device.Value == 0)
-                                device.Value = 7;
+                            if (device.Address == "444444" || device.Address == "333333")
+                            {
+                                if (r.NextDouble() > 0.5)
+                                    device.Value = 1;
+                                else
+                                    device.Value = 0;
+                            }
+                            else
+                            {
+                                if (device.Value == 0)
+                                    device.Value = 7;
 
-                            device.Value = device.Value * (r.NextDouble() * 0.4 + 0.8);
+                                device.Value = device.Value * (r.NextDouble() * 0.4 + 0.8);
+                            }
                             _deviceRepository.Update(device);
                         }
                     }

@@ -11,12 +11,10 @@ import {
     Typography
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {CreateTagPopup} from "../components/CreateTagPopup.tsx";
-import {Delete, AddAlert, Add, Notifications} from "@material-ui/icons";
 import axios from "axios";
 import {environment} from "../utils/Environment";
-import {MyTags} from "../models/DataInterfaces";
 import {CreateAlarmPopup} from "../components/CreateAlarmPopup";
+import {Delete} from "@mui/icons-material";
 
 export default function AlarmList({tag}) {
     const style = {
@@ -44,14 +42,6 @@ export default function AlarmList({tag}) {
         axios.delete(environment + `/api/Alarm/deleteAlarm?tagId=` + tag.id + "&alarmId=" + id).then(() => {
             axios.get(environment + `/api/Alarm/getByTag?tagId=` + tag.id).then(response => {
                 setAlarms(response.data);
-            });
-        });
-    }
-
-    function deleteDigital(id: string) {
-        axios.delete(environment + `/api/Tag/deleteDigitalInput/` + id).then(() => {
-            axios.get(environment + `/api/Tag/getMyInputs`).then(response => {
-                setTags(response.data);
             });
         });
     }
