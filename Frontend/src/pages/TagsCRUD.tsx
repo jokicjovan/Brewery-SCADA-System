@@ -1,8 +1,6 @@
 import {
     Box,
-    Button,
     Card,
-    CardActions,
     CardContent,
     Container, Fab,
     Grid,
@@ -12,12 +10,12 @@ import {
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {CreateTagPopup} from "../components/CreateTagPopup.tsx";
-import {Delete, AddAlert, Add, Notifications} from "@material-ui/icons";
+import {Delete, Add, Notifications} from "@material-ui/icons";
 import axios from "axios";
 import {environment} from "../utils/Environment";
-import {MyTags} from "../models/DataInterfaces";
-import {CreateAlarmPopup} from "../components/CreateAlarmPopup";
+import {AnalogData, DigitalData} from "../models/DataInterfaces";
 import AlarmList from "../components/AlarmList";
+import signalRTagService from "../services/signalRTagService.ts";
 
 export default function TagsCRUD() {
     const style = {
@@ -71,7 +69,41 @@ export default function TagsCRUD() {
         });
     }
 
+    useEffect(() => {
+        signalRTagService.startConnection();
 
+        signalRTagService.receiveAnalogData((newAnalogData : AnalogData) => {
+            setTags(prevTags => {
+                const updatedAnalogInputs = prevTags.analogInputs.map(analogInput => {
+                    if (analogInput.id === newAnalogData.tagId) {
+                        analogInput['value'] = newAnalogData.value
+                    }
+                    return analogInput;
+                });
+
+                return {
+                    ...prevTags,
+                    analogInputs: updatedAnalogInputs
+                };
+            });
+        });
+
+        signalRTagService.receiveDigitalData((newDigitalData : DigitalData) => {
+            setTags(prevTags => {
+                const updatedDigitalInputs = prevTags.digitalInputs.map(digitalInput => {
+                    if (digitalInput.id === newDigitalData.tagId) {
+                        digitalInput['value'] = newDigitalData.value
+                    }
+                    return digitalInput;
+                });
+
+                return {
+                    ...prevTags,
+                    analogInputs: updatedDigitalInputs
+                };
+            });
+        });
+    }, [tags]);
 
     return (
         <div>
@@ -104,7 +136,7 @@ export default function TagsCRUD() {
 
             </Modal>
             <Container sx={{width:"70%"}}>
-                {tags.analogInputs.map((device) => (
+                {tags.analogInputs.map((device : any) => (
                     <Card key={device.id} sx={{height:"200px", mb:2}}>
                         <CardContent>
                             <Grid container spacing={4}>
@@ -179,7 +211,7 @@ export default function TagsCRUD() {
                                         Value
                                     </Typography>
                                     <Typography variant="h3" sx={{textAlign:"center"}} component="div">
-                                        12cm
+                                        {device.value}
                                     </Typography>
                                 </Grid>
 
@@ -201,7 +233,7 @@ export default function TagsCRUD() {
 
                         </CardContent>
                     </Card>))}
-                {tags.digitalInputs.map((device) => (
+                {tags.digitalInputs.map((device : any) => (
                     <Card key={device.id} sx={{height:"200px", mb:2}}>
                         <CardContent>
                             <Grid container spacing={4}>

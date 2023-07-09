@@ -1,4 +1,4 @@
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {
     Avatar,
@@ -6,8 +6,7 @@ import {
     Container,
     CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Grid,
-    InputLabel, Stack,
-    TextField,
+    InputLabel, TextField,
     Typography
 } from "@mui/material";
 import axios from "axios";
@@ -21,8 +20,8 @@ export default function RegisterForm() {
     const [error, setError] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate()
-    const redirectToLogin = () => {
-        navigate("/login");
+    const redirectToHome = () => {
+        navigate("/home");
     }
 
     function handleSubmit(event : any) {
@@ -130,17 +129,6 @@ export default function RegisterForm() {
                     >
                         Sign Up
                     </Button>
-                    <p style={{marginTop:5,marginBottom:5,textAlign:"center"}}>or</p>
-                    <Stack style={{textAlign:"center",marginBottom:20}}>
-                        <Stack>
-                            {"Already have an account?"}
-                        </Stack>
-                        <Stack>
-                            <Link to="/login" style={{color:"dodgerblue", textDecoration:"None"}}>
-                                {"Sign in"}
-                            </Link>
-                        </Stack>
-                    </Stack>
                 </Box>
             </Box>
         </Container>
@@ -154,11 +142,11 @@ export default function RegisterForm() {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Next step is to go to login page and sign in to your account.
+                    Next step is to go to login page and sign in to created account.
                 </DialogContentText>
             </DialogContent>
             <DialogActions style={{display:"flex", justifyContent:"center"}}>
-                <Button onClick={redirectToLogin} variant="contained">OK</Button>
+                <Button onClick={redirectToHome} variant="contained">OK</Button>
             </DialogActions>
         </Dialog>
     </>

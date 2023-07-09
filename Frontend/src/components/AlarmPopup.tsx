@@ -49,4 +49,6 @@ export default function AlarmPopup() {
             ), {duration: duration, style:{backgroundColor:backgroundColor}})
         });
     }, []);
+
+    return <></>
 }

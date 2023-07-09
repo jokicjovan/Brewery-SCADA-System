@@ -1,6 +1,6 @@
 import {useState} from "react";
-import {Avatar, Box, Button, Container, CssBaseline, InputLabel, Stack, TextField, Typography} from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import {Avatar, Box, Button, Container, CssBaseline, InputLabel, TextField, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {environment} from "../utils/Environment.tsx";
 
@@ -88,16 +88,6 @@ export default function LoginForm(){
                 >
                     Sign In
                 </Button>
-                <Stack style={{textAlign:"center"}}>
-                    <Stack>
-                        {"Don't have an account? "}
-                    </Stack>
-                    <Stack>
-                        <Link to="/register" style={{color:"dodgerblue", textDecoration:"None"}}>
-                            {"Sign up"}
-                        </Link>
-                    </Stack>
-                </Stack>
             </Box>
         </Box>
         </Container>

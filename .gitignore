@@ -590,3 +590,4 @@ Backend/Migrations/
 *.db-shm
 *.db-wal
 Backend/Database/LocalDatabase.db
+Backend/alarmLog.txt

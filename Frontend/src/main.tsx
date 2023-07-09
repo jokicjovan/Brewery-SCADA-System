@@ -27,7 +27,7 @@ const theme = createTheme({
 
 const router = createBrowserRouter([
     {path:"/login", element: <UnauthenticatedRoute><Login/></UnauthenticatedRoute>},
-    {path:"/register", element: <UnauthenticatedRoute><Register/></UnauthenticatedRoute>},
+    {path:"/register", element: <AuthenticatedRoute><Register/></AuthenticatedRoute>},
     {path:"/home", element: <AuthenticatedRoute><Home/></AuthenticatedRoute>},
     {path:"*", element: <Navigate to="/home" replace />},
 ])
