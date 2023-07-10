@@ -28,7 +28,6 @@ namespace Brewery_SCADA_System.Models
         {
             Description= digitalInputDTO.Description;
             Driver = digitalInputDTO.Driver;    
-            IOAddress = digitalInputDTO.IOAddress;
             ScanTime = digitalInputDTO.ScanTime;
             ScanOn = digitalInputDTO.ScanOn;
             Users = new List<User>();

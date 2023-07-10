@@ -14,7 +14,6 @@ builder.Services.AddSwaggerGen();
 // builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddSingleton<DatabaseContext>();
 
-
 //Repositories
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
@@ -33,6 +32,7 @@ builder.Services.AddSingleton<IAlarmService, AlarmService>();
 //Security
 builder.Services.AddTransient<CustomCookieAuthenticationEvents>();
 
+builder.Services.AddHostedService<StartupService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",

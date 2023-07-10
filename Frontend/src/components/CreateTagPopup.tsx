@@ -243,7 +243,6 @@ export function CreateTagPopup({ closeModal }){
                                     <InputLabel >IO Address</InputLabel>
                                     <Select
                                         value={iOaddress}
-                                        required
                                         fullWidth
                                         autoFocus
                                         id="iOaddressAnalog"
@@ -370,7 +369,6 @@ export function CreateTagPopup({ closeModal }){
                                     <InputLabel >IO Address</InputLabel>
                                     <Select
                                         value={iOaddressDigital}
-                                        required
                                         fullWidth
                                         autoFocus
                                         id="iOaddressDigital"

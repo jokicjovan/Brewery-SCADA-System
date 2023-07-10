@@ -40,12 +40,30 @@ namespace Brewery_SCADA_System.Services
             _tagHub = tagHub;
             _alarmHub = alarmHub;
             _alarmRepository = alarmRepository;
+
+            
+        }
+
+        public async Task startupCheck()
+        {
+            foreach(AnalogInput input in _analogInputRepository.ReadAll())
+            {
+                if (input.ScanOn)
+                {
+                    StartAnalogTagReading(input.Id);
+                }
+            }
+            foreach (DigitalInput input in _digitalInputRepository.ReadAll())
+            {
+                if (input.ScanOn)
+                {
+                    StartDigitalTagReading(input.Id);
+                }
+            }
         }
 
         public async Task<AnalogInput> addAnalogInputAsync(AnalogInput input, Guid userId)
         {
-            if (await _deviceRepository.FindByAddress(input.IOAddress) == null)
-                throw new InvalidInputException("Address does not exist");
             if (input.HighLimit <= input.LowLimit)
                 throw new InvalidInputException("High limit cannot be lower than low limit");
             if (input.ScanTime <= 0)
@@ -54,8 +72,15 @@ namespace Brewery_SCADA_System.Services
             if (user == null)
                 throw new InvalidInputException("User does not exist");
 
+            Guid guid = Guid.NewGuid();
+            input.Id = guid;
+            input.IOAddress = guid.ToString();
+            Device device = new Device(guid.ToString(), 50);
+            _deviceRepository.Create(device);
+            _analogInputRepository.Create(input);
             input.Users.Add(user);
             user.AnalogInputs.Add(input);
+
             User saved = _userRepository.Update(user);
             UpdatePermissionsAnalogInputs(saved.AnalogInputs.Last(), userId);
             if (input.ScanOn)
@@ -65,14 +90,19 @@ namespace Brewery_SCADA_System.Services
 
         public async Task<DigitalInput> addDigitalInputAsync(DigitalInput input, Guid userId)
         {
-            if (await _deviceRepository.FindByAddress(input.IOAddress) == null)
-                throw new InvalidInputException("Address does not exist");
             if (input.ScanTime <= 0)
                 throw new InvalidInputException("Scan time must be greater than 0");
             User user = _userRepository.Read(userId);
             if (user == null)
                 throw new InvalidInputException("User does not exist");
 
+            Guid guid = Guid.NewGuid();
+            input.Id = guid;
+            input.IOAddress = guid.ToString();
+            Device device = new Device(guid.ToString(), 0);
+
+            _deviceRepository.Create(device);
+            _digitalInputRepository.Create(input);
             user.DigitalInputs.Add(input);
             User saved = _userRepository.Update(user);
             UpdatePermissionsDigitalInputs(saved.DigitalInputs.Last(), userId);
