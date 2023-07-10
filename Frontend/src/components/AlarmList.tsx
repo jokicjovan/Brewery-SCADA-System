@@ -14,7 +14,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../utils/Environment";
 import {CreateAlarmPopup} from "../components/CreateAlarmPopup";
-import {Delete} from "@mui/icons-material";
+import {Add, Delete} from "@mui/icons-material";
 
 export default function AlarmList({tag}) {
     const style = {

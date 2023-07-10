@@ -11,6 +11,7 @@
   background-image:url('src/assets/background.png');
   background-size: 500px 500px;
 }
-:body{
+body{
   background-color: transparent;
+  margin: 0;
 }

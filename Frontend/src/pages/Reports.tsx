@@ -72,7 +72,7 @@ export default function Reports() {
         axios.get(environment + `/api/Reports/allAlarmsByPriority?alarmPriority=`+(priority=="Normal"?0:priority=="High"?1:2).toString()).then(response => {
 
             const result = response.data;
-            const direction=sortDirectionTagByDate ? 1:-1;
+            const direction=sortDirectionAlarmByPriority ? 1:-1;
             result.sort((a, b) =>direction*(parseISO(a.timestamp) - parseISO(b.timestamp)));
             setAlarmsByPriority(result);
         });

@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useLayoutEffect, useState} from "react";
 import {
     Avatar,
     Box, Button,
@@ -23,6 +23,10 @@ export default function RegisterForm() {
     const redirectToHome = () => {
         navigate("/home");
     }
+    useLayoutEffect(() => {
+        document.body.style.backgroundColor = "transparent"
+        document.body.style.margin = "0"
+    });
 
     function handleSubmit(event : any) {
         event.preventDefault()
@@ -61,7 +65,7 @@ export default function RegisterForm() {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                <Avatar sx={{ m: 1, bgcolor: "#0f0b0a" }}>
                 </Avatar>
                 <Typography component="h1" variant="h3">
                     Sign Up
@@ -70,6 +74,7 @@ export default function RegisterForm() {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
+                                sx={{backgroundColor:"white"}}
                                 required
                                 fullWidth
                                 autoFocus
@@ -83,6 +88,7 @@ export default function RegisterForm() {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
+                                sx={{backgroundColor:"white"}}
                                 required
                                 fullWidth
                                 id="surname"
@@ -95,6 +101,7 @@ export default function RegisterForm() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                sx={{backgroundColor:"white"}}
                                 required
                                 fullWidth
                                 id="email"
@@ -107,6 +114,7 @@ export default function RegisterForm() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                sx={{backgroundColor:"white"}}
                                 required
                                 fullWidth
                                 name="password"
@@ -125,7 +133,7 @@ export default function RegisterForm() {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 1}}
+                        sx={{ mt: 3, mb:3,backgroundColor: "#0f0b0a"}}
                     >
                         Sign Up
                     </Button>

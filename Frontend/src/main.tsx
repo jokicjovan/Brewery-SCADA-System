@@ -12,6 +12,8 @@ import Register from "./pages/Register.tsx";
 import {Toaster} from "react-hot-toast";
 import Reports from "./pages/Reports";
 import {useLayoutEffect} from "react";
+import Trending from "./pages/Trending";
+import Navbar from "./components/Navbar";
 
 axios.defaults.withCredentials = true
 
@@ -29,9 +31,10 @@ const theme = createTheme({
 
 const router = createBrowserRouter([
     {path:"/login", element: <UnauthenticatedRoute><Login/></UnauthenticatedRoute>},
-    {path:"/register", element: <AuthenticatedRoute><Register/></AuthenticatedRoute>},
-    {path:"/home", element: <AuthenticatedRoute><Home/></AuthenticatedRoute>},
-    {path:"/reports", element: <AuthenticatedRoute><Reports/></AuthenticatedRoute>},
+    {path:"/register", element: <AuthenticatedRoute><Navbar/><Register/></AuthenticatedRoute>},
+    {path:"/home", element: <AuthenticatedRoute><Navbar/><Home/></AuthenticatedRoute>},
+    {path:"/reports", element: <AuthenticatedRoute><Navbar/><Reports/></AuthenticatedRoute>},
+    {path:"/trending", element: <AuthenticatedRoute><Navbar/><Trending/></AuthenticatedRoute>},
     {path:"*", element: <Navigate to="/home" replace />},
 ])
 

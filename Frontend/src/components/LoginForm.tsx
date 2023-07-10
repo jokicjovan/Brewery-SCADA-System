@@ -33,6 +33,7 @@ export default function LoginForm() {
     }
     useLayoutEffect(() => {
         document.body.style.backgroundColor = "transparent"
+        document.body.style.margin = "0"
     });
 
     return <>
@@ -46,7 +47,7 @@ export default function LoginForm() {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{m: 1, bgcolor: 'primary.main'}}/>
+                <Avatar sx={{m: 1, bgcolor: "#0f0b0a"}}/>
 
                 <Typography component="h1" variant="h3">
                     Sign in
@@ -88,7 +89,7 @@ export default function LoginForm() {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{mt: 3, mb: 3}}
+                        sx={{mt: 3, mb: 3,backgroundColor: "#0f0b0a"}}
                     >
                         Sign In
                     </Button>
