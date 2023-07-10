@@ -22,5 +22,6 @@ namespace Brewery_SCADA_System.Services
         Task<IODigitalData> getLatestDigitalTagValue(Guid tagId, Guid userId);
         Task updateAnalog(Guid id, double value, Guid userId);
         Task updateDigital(Guid id, double value, Guid userId);
+        Task startupCheck();
     }
 }

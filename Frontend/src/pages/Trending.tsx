@@ -185,7 +185,7 @@ export default function Trending() {
                                 <StyledTableCell align="center">{tag.lowLimit}</StyledTableCell>
                                 <StyledTableCell align="center">{tag.highLimit}</StyledTableCell>
                                 <StyledTableCell align="center">{tag.unit}</StyledTableCell>
-                                <StyledTableCell align="center">{Math.round(1000*tag.value)/1000}</StyledTableCell>
+                                <StyledTableCell align="center">{tag.value.toFixed(3)}</StyledTableCell>
                                 <StyledTableCell align="center"><IconButton aria-label="add alert"
                                                                             onClick={() => {
                                                                                 setCurrentTag(tag);
@@ -209,7 +209,7 @@ export default function Trending() {
                                 <StyledTableCell align="center"></StyledTableCell>
                                 <StyledTableCell align="center"></StyledTableCell>
                                 <StyledTableCell align="center"></StyledTableCell>
-                                <StyledTableCell align="center">{Math.round(1000*tag.value)/1000}</StyledTableCell>
+                                <StyledTableCell align="center">{tag.value == 1 ? "On" : "Off"}</StyledTableCell>
                                 <StyledTableCell align="center"></StyledTableCell>
                             </StyledTableRow>
                         ))}

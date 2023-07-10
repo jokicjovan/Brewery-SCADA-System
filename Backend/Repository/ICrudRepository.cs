@@ -5,10 +5,10 @@ namespace Brewery_SCADA_System.Repository
 {
     public interface ICrudRepository<T> where T : class, IBaseEntity
     {
-        IEnumerable<T> ReadAll();
-        T Read(Guid id);
-        T Create(T entity);
-        T Update(T entity);
-        T Delete(Guid id);
+        Task<IEnumerable<T>> ReadAll();
+        Task<T> Read(Guid id);
+        Task<T> Create(T entity);
+        Task<T> Update(T entity);
+        Task<T> Delete(Guid id);
     }
 }

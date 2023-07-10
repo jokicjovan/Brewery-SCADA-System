@@ -10,29 +10,57 @@ namespace Brewery_SCADA_System.Repository
         {
         }
 
-        public Task DeleteByAlarmId(Guid id)
+        public async Task DeleteByAlarmId(Guid id)
         {
-            var entityToDelete = ReadAll();
-            foreach (var alarmAlert in entityToDelete)
+            var entityToDelete = await ReadAll();
+            await Global._semaphore.WaitAsync();
+            try
             {
-                if (alarmAlert.AlarmId != id) continue;
-                _context.Remove(alarmAlert);
-                _context.SaveChanges();
+                foreach (var alarmAlert in entityToDelete)
+                {
+                    if (alarmAlert.AlarmId != id) continue;
+                    _context.Remove(alarmAlert);
+                    _context.SaveChanges();
+                }
+                await Task.Delay(1);
             }
-            return Task.CompletedTask;
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
 
         public async Task<IEnumerable<AlarmAlert>> FindByIdByTime(Guid id, DateTime from, DateTime to)
         {
-            return await _entities
-                .Where(e => e.AlarmId == id && e.Timestamp >= from && e.Timestamp <= to)
-                .ToListAsync();
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities
+                    .Where(e => e.AlarmId == id && e.Timestamp >= from && e.Timestamp <= to)
+                    .ToListAsync();
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
 
         public async Task<List<AlarmAlert>> FindByAlarmId(Guid id)
         {
-            return await _entities
-                .Where(e => e.AlarmId == id).ToListAsync();
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities
+                    .Where(e => e.AlarmId == id).ToListAsync();
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
     }
 }

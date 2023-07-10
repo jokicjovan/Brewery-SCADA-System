@@ -14,7 +14,6 @@ const SignalRTagService: SignalRTagService = {
     startConnection: () => {
         const connection = new HubConnectionBuilder()
             .withUrl("http://localhost:5041/Hub/tag", {withCredentials: true})
-            .withAutomaticReconnect()
             .build();
 
         connection.start().catch((error: Error) => {

@@ -12,29 +12,69 @@ namespace Brewery_SCADA_System.Repository
 
         public async Task<List<IOAnalogData>> FindByTagId(Guid id)
         {
-            return await _entities
-                .Where(e => e.TagId == id).ToListAsync();
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities
+                    .Where(e => e.TagId == id).ToListAsync();
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
 
         public async Task<List<IOAnalogData>> FindByIdByTime(Guid id, DateTime from, DateTime to)
         {
-            return await _entities
-                .Where(e => e.TagId == id && e.Timestamp >= from && e.Timestamp <= to)
-                .ToListAsync();
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities
+                    .Where(e => e.TagId == id && e.Timestamp >= from && e.Timestamp <= to)
+                    .ToListAsync();
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
 
         public async Task<IOAnalogData> FindLatestById(Guid id)
         {
-            return await _entities.OrderByDescending(e => e.Timestamp).Where(e => e.TagId == id).FirstOrDefaultAsync();
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities.OrderByDescending(e => e.Timestamp).Where(e => e.TagId == id).FirstOrDefaultAsync();
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
 
         public async Task DeleteByTagId(Guid id)
         {
-            var entities = await _entities.Where(e => e.TagId == id).ToListAsync();
-            if (entities.Count > 0)
+            await Global._semaphore.WaitAsync();
+
+            try
             {
-                _entities.RemoveRange(entities);
-                await _context.SaveChangesAsync();
+                var entities = await _entities.Where(e => e.TagId == id).ToListAsync();
+                if (entities.Count > 0)
+                {
+                    _entities.RemoveRange(entities);
+                    await _context.SaveChangesAsync();
+                }
+                await Task.Delay(1);
+            }
+            finally
+            {
+                Global._semaphore.Release();
             }
         }
     }

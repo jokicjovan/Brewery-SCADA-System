@@ -353,7 +353,7 @@ export default function TagsCRUD() {
                                         Value
                                     </Typography>
                                     <Typography variant="h3" sx={{textAlign: "center"}} component="div">
-                                        {Math.round(1000 * device.value) / 1000}
+                                        {device.value.toFixed(3)}
                                     </Typography>
                                 </Grid>
 

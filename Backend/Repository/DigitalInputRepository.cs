@@ -10,7 +10,18 @@ namespace Brewery_SCADA_System.Repository
 
         public async Task<DigitalInput> FindByIdWithUsers(Guid id)
         {
-            return await _entities.Include(u => u.Users).FirstOrDefaultAsync(e => e.Id == id);
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities.Include(u => u.Users).FirstOrDefaultAsync(e => e.Id == id);
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
+            
         }
 
     }

@@ -37,7 +37,7 @@ namespace Brewery_SCADA_System.Services
             createdUser.CreatedBy= user.CreatedBy;
             createdUser.AnalogInputs = user.AnalogInputs;
             createdUser.DigitalInputs = user.DigitalInputs;
-            return _userRepository.Create(createdUser);
+            return await _userRepository.Create(createdUser);
         }
         public async Task <User> Get(Guid id)
         {
