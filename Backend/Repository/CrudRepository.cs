@@ -15,86 +15,96 @@ namespace Brewery_SCADA_System.Repository
             _entities = context.Set<T>();
         }
 
-        public virtual IEnumerable<T> ReadAll()
+        public virtual async Task<IEnumerable<T>> ReadAll()
         {
-            return _entities.ToList();
-        }
-
-        public virtual T Read(Guid id)
-        {
-            return _entities.FirstOrDefault(e => e.Id == id);
-        }
-
-        public virtual T Create(T entity)
-        {
-            using (var transaction = _context.Database.BeginTransaction())
+            await Global._semaphore.WaitAsync();
+            IEnumerable<T> data;
+            try
             {
-                try
-                {
-                    _entities.Add(entity);
-                    _context.SaveChanges();
-
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    Console.WriteLine("An error occurred: " + ex.Message);
-                }
+                data = _entities.ToList();
             }
+            finally
+            {
+                Global._semaphore.Release();
+            }
+            return data;
+        }
 
+        public virtual async Task<T> Read(Guid id)
+        {
+            await Global._semaphore.WaitAsync();
+            T data;
+            try
+            {
+                data = _entities.FirstOrDefault(e => e.Id == id);
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
+            return data;
+
+
+        }
+
+        public virtual async Task<T> Create(T entity)
+        {
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                _entities.Add(entity);
+                _context.SaveChanges();
+                await Task.Delay(1);
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
             return entity;
 
         }
 
-        public virtual T Update(T entity)
+        public virtual async Task<T> Update(T entity)
         {
-            var entityToUpdate = Read(entity.Id);
-            using (var transaction = _context.Database.BeginTransaction())
+            T entityToUpdate;
+            await Global._semaphore.WaitAsync();
+            try
             {
-                try
+                entityToUpdate = _entities.FirstOrDefault(e => e.Id == entity.Id);
+                if (entityToUpdate != null)
                 {
-                    if (entityToUpdate != null)
-                    {
-                        _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-                        _context.SaveChanges();
-                    }
-                    transaction.Commit();
+                    _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+                    _context.SaveChanges();
+                    await Task.Delay(1);
                 }
-                catch (Exception ex)
-                {
-                    // Handle exceptions and roll back the transaction if needed
-                    transaction.Rollback();
-                    Console.WriteLine("An error occurred: " + ex.Message);
-                }
+            }
+            finally
+            {
+                Global._semaphore.Release();
             }
 
             return entityToUpdate;
         }
 
-        public virtual T Delete(Guid id)
+        public virtual async Task<T> Delete(Guid id)
         {
-            var entityToDelete = Read(id);
-            using (var transaction = _context.Database.BeginTransaction())
+            T entityToDelete;
+            await Global._semaphore.WaitAsync();
+            try
             {
-                try
+                entityToDelete=_entities.FirstOrDefault(e => e.Id == id);
+                if (entityToDelete != null)
                 {
-                    if (entityToDelete != null)
-                    {
-                        _context.Remove(entityToDelete);
-                        _context.SaveChanges();
-                    }
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions and roll back the transaction if needed
-                    transaction.Rollback();
-                    Console.WriteLine("An error occurred: " + ex.Message);
+                    _context.Remove(entityToDelete);
+                    _context.SaveChanges();
+                    await Task.Delay(1);
                 }
             }
-            
-
+            finally
+            {
+                Global._semaphore.Release();
+            }
             return entityToDelete;
         }
 

@@ -12,7 +12,6 @@ namespace Brewery_SCADA_System.Services
         private readonly IDeviceRepository _deviceRepository;
         private readonly IAnalogInputRepository _analogInputRepository;
         private readonly IDigitalInputRepository _digitalInputRepository;
-        public static readonly object dbContextLock = new object();
 
 
 
@@ -33,22 +32,27 @@ namespace Brewery_SCADA_System.Services
 
                 while (true)
                 {
-                    List<Device> devices = _deviceRepository.ReadAll().ToList();
+                    List<Device> devices =(await _deviceRepository.ReadAll()).ToList();
                     foreach (Device device in devices)
                     {
                         {
                             string driverType = "";
                             bool isDigital = false;
-                            DigitalInput input = await _digitalInputRepository.FindByIdWithUsers(Guid.Parse(device.Address));
-                            if (input != null)
+                            DigitalInput digitalInput = await _digitalInputRepository.FindByIdWithUsers(Guid.Parse(device.Address));
+                            if (digitalInput != null)
                             {
                                 isDigital = true;
-                                driverType = input.Driver;
+                                driverType = digitalInput.Driver;
                             }
                             else
                             {
-                                driverType = _analogInputRepository.Read(Guid.Parse(device.Address)).Driver;
-                                isDigital = false;
+                                AnalogInput analogInput = (await _analogInputRepository.Read(Guid.Parse(device.Address)));
+                                if (analogInput != null)
+                                {
+
+                                    driverType = analogInput.Driver;
+                                    isDigital = false;
+                                }
                             }
 
                             if (driverType == "SIMULATION")
@@ -86,7 +90,7 @@ namespace Brewery_SCADA_System.Services
                                     }
                                 }
                             }
-                            else
+                            else if (driverType =="RTU")
                             {
                                 if (isDigital)
                                 {
@@ -131,14 +135,14 @@ namespace Brewery_SCADA_System.Services
             return 100 * DateTime.Now.Second / 60;
         }
 
-        public List<String> GetAllAddresses()
+        public async Task<List<String>> GetAllAddresses()
         {
-            return _deviceRepository.ReadAll().Select(device => device.Address).ToList();
+            return (await _deviceRepository.ReadAll()).Select(device => device.Address).ToList();
         }
 
         public async Task<Device> Add(Device device)
         {
-            return _deviceRepository.Create(device);
+            return await _deviceRepository.Create(device);
         }
     }
 }

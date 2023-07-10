@@ -46,8 +46,8 @@ namespace Brewery_SCADA_System.Services
                         break;
                 }
             }
+            Thread.Sleep(1000);
             HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:5041/api/Device/startSimulation");
-            Thread.Sleep(500);
             HttpResponseMessage responseStartup = await _httpClient.GetAsync("http://localhost:5041/api/Tag/startupCheck");
         }
     }
