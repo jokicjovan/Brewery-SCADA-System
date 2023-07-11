@@ -19,6 +19,7 @@ namespace Brewery_SCADA_System.Models
         [JsonIgnore]
         public List<User> Users { get; set; }
 
+
         public AnalogInput(string description, string driver, string iOAddress, int scanTime, List<Alarm> alarms, bool scanOn, double lowLimit, double highLimit, string unit)
         {
             Description = description;
@@ -36,7 +37,6 @@ namespace Brewery_SCADA_System.Models
         {
             Description= analogInputDTO.Description;
             Driver = analogInputDTO.Driver;
-            IOAddress = analogInputDTO.IOAddress;
             ScanTime = analogInputDTO.ScanTime;
             Alarms = new List<Alarm>();
             ScanOn = analogInputDTO.ScanOn;

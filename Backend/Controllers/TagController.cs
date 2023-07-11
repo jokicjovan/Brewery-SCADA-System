@@ -160,6 +160,13 @@ namespace Brewery_SCADA_System.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult> startupCheck()
+        {
+           _tagService.startupCheck();
+            return Ok();
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> updateAnalogInput([FromBody] AddressValueDTO analogValue)

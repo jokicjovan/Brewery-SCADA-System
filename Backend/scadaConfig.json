@@ -1,0 +1,6 @@
+{
+    "frequency":2000,
+    "lowLimit":0,
+    "highLimit":50,
+    "simulation":"SIN"
+}

@@ -10,7 +10,17 @@ namespace Brewery_SCADA_System.Repository
 
         public async Task<Device> FindByAddress(String address)
         {
-            return await _entities.FirstOrDefaultAsync(e => e.Address == address);
+            await Global._semaphore.WaitAsync();
+
+            try
+            {
+                await Task.Delay(1);
+                return await _entities.FirstOrDefaultAsync(e => e.Address == address);
+            }
+            finally
+            {
+                Global._semaphore.Release();
+            }
         }
     }
 }

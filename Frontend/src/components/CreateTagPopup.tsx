@@ -21,7 +21,6 @@ export function CreateTagPopup({ closeModal }){
 
     //Global
     const [tabIndex, setTabIndex] = useState(0);
-    const [devices, setDevices] = useState([]);
 
 
     //Analog Input Tab
@@ -198,18 +197,6 @@ export function CreateTagPopup({ closeModal }){
 
 
 
-    useEffect( ()=>{
-        axios.get(environment + `/api/Device/getAllAddresses`).then(response=>{
-            setDevices(response.data);
-            if (devices.length>0){
-                setIOaddress(devices[0]);
-                setIOaddressDigital(devices[0]);
-            }
-        });
-    },[])
-
-
-
 
 
     return (
@@ -245,26 +232,7 @@ export function CreateTagPopup({ closeModal }){
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <FormControl sx={{width:"100%"}}>
-                                    <InputLabel >IO Address</InputLabel>
-                                    <Select
-                                        value={iOaddress}
-                                        required
-                                        fullWidth
-                                        autoFocus
-                                        id="iOaddressAnalog"
-                                        label="IO Address"
-                                        name="iOaddressAnalog"
-                                        placeholder={"(e.g. DriverName)"}
-                                        onChange={(e) => {setIOaddress(e.target.value)}}
-                                    >
-                                            {devices.map((device) => (
-                                                <MenuItem key={device} value={device}>{device}</MenuItem>
-                                            ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+
                             <Grid item xs={12} sm={4}>
                                 <TextField
                                     required
@@ -379,26 +347,7 @@ export function CreateTagPopup({ closeModal }){
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <FormControl sx={{width:"100%"}}>
-                                    <InputLabel >IO Address</InputLabel>
-                                    <Select
-                                        value={iOaddressDigital}
-                                        required
-                                        fullWidth
-                                        autoFocus
-                                        id="iOaddressDigital"
-                                        label="IO Address"
-                                        name="iOaddressDigital"
-                                        placeholder={"(e.g. DriverName)"}
-                                        onChange={(e) => {setIOaddressDigital(e.target.value)}}
-                                    >
-                                        {devices.map((device) => (
-                                            <MenuItem key={device} value={device}>{device}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+
                             <Grid item xs={12} sm={8} sx={{margin:"auto",paddingLeft:"0",verticalAlign:"middle"}}>
                                 <TextField
                                     required
