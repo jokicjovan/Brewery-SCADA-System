@@ -347,13 +347,19 @@ namespace Brewery_SCADA_System.Services
                                 {
                                     Id = new Guid(),
                                     AlarmId = analogInputAlarm.Id,
-                                    Timestamp = DateTime.Now
+                                    Timestamp = DateTime.Now,
+                                    Value = device.Value
                                 };
                                 _alarmAlertRepository.Create(alarmAlert);
+                                await Global._semaphoreWriter.WaitAsync();
 
                                 using (StreamWriter outputFile = new StreamWriter("alarmLog.txt", true))
                                 {
                                     await outputFile.WriteAsync("Alarm (id: " + alarmAlert.AlarmId + ") triggered for tag (id: " + ioAnalogData.TagId + ") at " + alarmAlert.Timestamp + "\n");
+                                }
+                                finally
+                                {
+                                    Global._semaphoreWriter.Release();
                                 }
 
                                 AlarmReportsDTO report = new AlarmReportsDTO(analogInputAlarm, alarmAlert.Timestamp, device.Value);
@@ -362,6 +368,10 @@ namespace Brewery_SCADA_System.Services
                         }
 
                         await _tagHub.Clients.Users(analogInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveAnalogData(ioAnalogData);
+                    }
+                    else
+                    {
+                        break;
                     }
                     Thread.Sleep(analogInput.ScanTime * 1000);
 
@@ -410,6 +420,10 @@ namespace Brewery_SCADA_System.Services
                         _ioDigitalDataRepository.Create(ioDigitalData);
 
                         await _tagHub.Clients.Users(digitalInput.Users.Select(u => u.Id.ToString()).ToList()).ReceiveDigitalData(ioDigitalData);
+                    }
+                    else
+                    {
+                        break;
                     }
                     Thread.Sleep(digitalInput.ScanTime * 1000);
 

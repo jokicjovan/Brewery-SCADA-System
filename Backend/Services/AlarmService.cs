@@ -71,7 +71,8 @@ namespace Brewery_SCADA_System.Services
                     List<AlarmReportsDTO> alarmReportsDtos = alarmAlerts.Select(item => new AlarmReportsDTO
                     {
                         Alarm= analogInputAlarm,
-                        Timestamp = item.Timestamp
+                        Timestamp = item.Timestamp,
+                        Value=item.Value
                     }).ToList();
                     alarmReports.AddRange(alarmReportsDtos);
                 }

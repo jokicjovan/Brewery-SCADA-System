@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Button,
@@ -225,18 +225,25 @@ export function CreateTagPopup({ closeModal }){
                 {tabIndex === 0 && (
                     <Box component="form" onSubmit={handleSubmitAnalog} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    id="driverAnalog"
-                                    label="Driver"
-                                    name="driverAnalog"
-                                    placeholder={"(e.g. DriverName)"}
-                                    autoComplete="given-name"
-                                    onChange={(e) => {setDriver(e.target.value)}}
-                                />
+                            <Grid item xs={12} sm={12}>
+                                <FormControl sx={{width: "100%"}}>
+                                    <InputLabel>Driver</InputLabel>
+                                    <Select
+                                        value={driver}
+                                        required
+                                        fullWidth
+                                        autoFocus
+                                        id="driverAnalog"
+                                        label="Driver"
+                                        name="driverAnalog"
+                                        placeholder={"(e.g. DriverName)"}
+                                        onChange={(e) => {setDriver(e.target.value)}}
+
+                                    >
+                                        <MenuItem key="RTU" value="RTU">RTU</MenuItem>
+                                        <MenuItem key="SIMULATION" value="SIMULATION">Simulation</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl sx={{width:"100%"}}>
@@ -352,18 +359,25 @@ export function CreateTagPopup({ closeModal }){
                 {tabIndex === 1 && (
                     <Box component="form" onSubmit={handleSubmitDigital} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    id="driverDigital"
-                                    label="Driver"
-                                    name="driverDigital"
-                                    placeholder={"(e.g. DriverName)"}
-                                    autoComplete="given-name"
-                                    onChange={(e) => {setDriverDigital(e.target.value)}}
-                                />
+                            <Grid item xs={12} sm={12}>
+                                <FormControl sx={{width: "100%"}}>
+                                    <InputLabel>Driver</InputLabel>
+                                    <Select
+                                        value={driverDigital}
+                                        required
+                                        fullWidth
+                                        autoFocus
+                                        id="driverDigital"
+                                        label="Driver"
+                                        name="driverDigital"
+                                        placeholder={"(e.g. DriverName)"}
+                                        onChange={(e) => {setDriverDigital(e.target.value)}}
+
+                                    >
+                                        <MenuItem key="RTU" value="RTU">RTU</MenuItem>
+                                        <MenuItem key="SIMULATION" value="SIMULATION">Simulation</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl sx={{width:"100%"}}>

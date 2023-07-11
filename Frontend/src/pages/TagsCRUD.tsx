@@ -162,7 +162,10 @@ export default function TagsCRUD() {
     return (
         <div>
             <Typography sx={{textAlign: "center", fontSize: "35px", fontWeight: "bold", mb: 3}}>Tags</Typography>
-            <Fab variant="extended" sx={{position: "fixed", bottom: "50px", right: "50px"}} onClick={handleOpen}>
+            <Fab variant="extended" sx={{position: "fixed", bottom: "50px", right: "50px", backgroundColor:"#0f0b0a",color:"white",'&:hover': {
+                    color: '#0f0b0a', // Change to your desired color
+                },}}
+                 onClick={handleOpen}>
                 <Add sx={{mr: 1}}/>
                 Add Tag
             </Fab>
@@ -189,7 +192,7 @@ export default function TagsCRUD() {
                 closeAfterTransition
             >
                 <Box sx={style}>
-                    <AlarmList tag={currentTag}></AlarmList>
+                    <AlarmList canAddAlarms={true} tag={currentTag}></AlarmList>
                 </Box>
 
             </Modal>
@@ -273,7 +276,7 @@ export default function TagsCRUD() {
             </Modal>
             <Container sx={{width: "70%"}}>
                 {tags.analogInputs.map((device: any) => (
-                    <Card key={device.id} sx={{height: "200px", mb: 2}}>
+                    <Card key={device.id} sx={{height: "200px", mb: 2, backgroundColor: device.scanOn ? "white" : "#dcdcdc"}}>
                         <CardContent>
                             <Grid container spacing={4}>
                                 <Grid item sm={6}>
@@ -401,7 +404,7 @@ export default function TagsCRUD() {
                         </CardContent>
                     </Card>))}
                 {tags.digitalInputs.map((device: any) => (
-                    <Card key={device.id} sx={{height: "200px", mb: 2}}>
+                    <Card key={device.id} sx={{height: "200px", mb: 2, backgroundColor: device.scanOn ? "white" : "#dcdcdc"}}>
                         <CardContent>
                             <Grid container spacing={4}>
                                 <Grid item sm={6}>
@@ -460,7 +463,7 @@ export default function TagsCRUD() {
                                 }}>
                                     <Typography sx={{fontSize: 12, textAlign: "center"}} color="text.secondary"
                                                 gutterBottom>
-                                        Value
+                                        State
                                     </Typography>
                                     <Typography variant="h3" sx={{textAlign: "center"}} component="div">
                                         {device.value == 1 ? "On" : "Off"}

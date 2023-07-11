@@ -65,6 +65,7 @@ export default function Reports() {
                 result.sort((a, b) =>direction*(a.alarm.priority - b.alarm.priority));
             else
                 result.sort((a, b) =>direction*(parseISO(a.timestamp) - parseISO(b.timestamp)));
+            console.log(result);
             setAlarmsByTime(result);
         });
     }
@@ -159,7 +160,7 @@ export default function Reports() {
     return <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div style={{display: "flex", justifyContent: "center", flexDirection: "column"}}>
             <h1 style={{textAlign: "center"}}>Reports</h1>
-            <FormControl sx={{width: "100%", justifyContent: "center",backgroundColor:"white"}}>
+            <FormControl sx={{width: "100%", maxWidth:"800px", justifyContent: "center",backgroundColor:"white", margin:"0 auto"}}>
                 <InputLabel>Priority</InputLabel>
                 <Select
                     value={reportType}
@@ -265,7 +266,7 @@ export default function Reports() {
                                                 Value
                                             </Typography>
                                             <Typography sx={{fontSize: 18}} gutterBottom>
-                                                {alarm.value != null && (alarm.value + " " + alarm.alarm.analogInput.unit)}
+                                                {alarm.value != null && (alarm.value.toFixed(3) + " " + alarm.alarm.analogInput.unit)}
                                                 {alarm.value == null && "NaN"}
                                             </Typography>
                                         </Grid>

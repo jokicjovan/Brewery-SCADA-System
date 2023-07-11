@@ -14,13 +14,14 @@ export default function AlarmPopup() {
             setAlarmsData((prevAlarmsData) => [...prevAlarmsData, newAlarmData]);
             let duration = 5000;
             let backgroundColor = "#ffe900";
+            console.log(newAlarmData.alarm.priority)
             //let icon = "⚠️";
-            if (newAlarmData.alarm.priority == "MEDIUM"){
+            if (newAlarmData.alarm.priority == 1){
                 duration = 10000;
                 backgroundColor = "#ff9c00"
                 //icon = "⛔"
             }
-            else if (newAlarmData.alarm.priority == "HIGH"){
+            else if (newAlarmData.alarm.priority == 2){
                 duration = Infinity;
                 backgroundColor = "#ff2a00"
                 //icon = "🚨"
@@ -40,7 +41,7 @@ export default function AlarmPopup() {
                         <b>Edge value:</b> {newAlarmData.alarm.edgeValue}
                     </span>
                     <span>
-                        <b>Current value:</b> {newAlarmData.value}
+                        <b>Current value:</b> {newAlarmData.value.toFixed(3)}
                     </span>
                     <span>
                         <b>Time:</b> {new Date(newAlarmData.timestamp).toLocaleString()}

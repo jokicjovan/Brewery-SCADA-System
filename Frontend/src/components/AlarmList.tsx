@@ -16,7 +16,7 @@ import {environment} from "../utils/Environment";
 import {CreateAlarmPopup} from "../components/CreateAlarmPopup";
 import {Add, Delete} from "@mui/icons-material";
 
-export default function AlarmList({tag}) {
+export default function AlarmList({tag,canAddAlarms=false}) {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -51,13 +51,13 @@ export default function AlarmList({tag}) {
         <div>
             <Typography sx={{textAlign: "center", fontSize: "30px", fontWeight: "bold", mb: 3}}>Alarms</Typography>
 
-            <Fab variant="extended" sx={{position: "fixed", top: "30px", right: "30px", boxShadow: "none"}}
+            {canAddAlarms && <Fab variant="extended" sx={{position: "fixed", top: "30px", right: "30px", boxShadow: "none"}}
                  onClick={() => {
                      setOpen(true);
                  }}>
                 <Add sx={{mr: 1}}/>
                 Add Alarm
-            </Fab>
+            </Fab>}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -67,7 +67,7 @@ export default function AlarmList({tag}) {
                 }}
                 closeAfterTransition
             >
-                <Box sx={style}>
+                 <Box sx={style}>
                     <CreateAlarmPopup tag={tag} closeModal={() => {
                         setOpen(false);
                     }}> </CreateAlarmPopup>
