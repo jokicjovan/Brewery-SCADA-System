@@ -391,10 +391,6 @@ namespace Brewery_SCADA_System.Services
                                 }
                                 finally
                                 {
-                                    Global._semaphore.Release();
-                                }
-                                finally
-                                {
                                     Global._semaphoreWriter.Release();
                                 }
 
