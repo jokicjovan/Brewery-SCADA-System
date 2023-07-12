@@ -38,6 +38,9 @@ export default function AlarmPopup() {
                         <b>TagId:</b> {newAlarmData.alarm.analogInput.id}
                     </span>
                     <span>
+                        <b>Type:</b> {newAlarmData.alarm.type == 0 ? "Low" : "High"}
+                    </span>
+                    <span>
                         <b>Edge value:</b> {newAlarmData.alarm.edgeValue}
                     </span>
                     <span>
