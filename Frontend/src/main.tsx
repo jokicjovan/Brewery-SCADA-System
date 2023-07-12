@@ -4,26 +4,26 @@ import './index.css'
 import {UnauthenticatedRoute} from "./utils/UnauthenticatedRoute.tsx";
 import Login from "./pages/Login.tsx";
 import {AuthenticatedRoute} from "./utils/AuthenticatedRoute.tsx";
-import Home from "./pages/Home.tsx";
 import {AuthProvider} from "./utils/AuthContext.tsx";
 import {createTheme, ThemeProvider} from "@mui/material";
 import axios from "axios";
 import Register from "./pages/Register.tsx";
 import {Toaster} from "react-hot-toast";
 import Reports from "./pages/Reports";
-import {useLayoutEffect} from "react";
-import Trending from "./pages/Trending";
 import Navbar from "./components/Navbar";
+import TagsCRUD from "./pages/TagsCRUD.tsx";
+import Trending from "./pages/Trending.tsx";
+import {AdminRoute} from "./utils/AdminRoute.tsx";
 
 axios.defaults.withCredentials = true
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#394867",
+            main: "#0f0b0a",
         },
         secondary: {
-            main: "#9BA4B5",
+            main: "#fdefc7",
             contrastText: 'white'
         },
     },
@@ -31,11 +31,11 @@ const theme = createTheme({
 
 const router = createBrowserRouter([
     {path:"/login", element: <UnauthenticatedRoute><Login/></UnauthenticatedRoute>},
-    {path:"/register", element: <AuthenticatedRoute><Navbar/><Register/></AuthenticatedRoute>},
-    {path:"/home", element: <AuthenticatedRoute><Navbar/><Home/></AuthenticatedRoute>},
-    {path:"/reports", element: <AuthenticatedRoute><Navbar/><Reports/></AuthenticatedRoute>},
+    {path:"/register", element: <AuthenticatedRoute><AdminRoute><Navbar/><Register/></AdminRoute></AuthenticatedRoute>},
+    {path:"/manager", element: <AuthenticatedRoute><AdminRoute><Navbar/><TagsCRUD/></AdminRoute></AuthenticatedRoute>},
     {path:"/trending", element: <AuthenticatedRoute><Navbar/><Trending/></AuthenticatedRoute>},
-    {path:"*", element: <Navigate to="/home" replace />},
+    {path:"/reports", element: <AuthenticatedRoute><AdminRoute><Navbar/><Reports/></AdminRoute></AuthenticatedRoute>},
+    {path:"*", element: <Navigate to="/trending" replace />},
 ])
 
 

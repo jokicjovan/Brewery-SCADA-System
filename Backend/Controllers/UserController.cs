@@ -46,7 +46,7 @@ namespace Brewery_SCADA_System.Controllers
                 ClaimsIdentity identity = result.Principal.Identity as ClaimsIdentity;
                 String userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
                 User user = new User(userDto.Name, userDto.Surname, userDto.Email, userDto.Password, "User",await _userService.Get(Guid.Parse(userId)));
-                _userService.CreateUser(user);
+                await _userService.CreateUser(user);
                 return Ok("Registration successful!");
             }
             else

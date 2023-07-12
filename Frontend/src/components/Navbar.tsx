@@ -12,38 +12,44 @@ import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {environment} from "../utils/Environment.js";
+import {useContext} from "react";
+import {AuthContext} from "../utils/AuthContext.tsx";
 export default function Navbar() {
-
+    const { role , isLoading } = useContext(AuthContext);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const navigate = useNavigate()
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleCloseNavMenu = event => {
+    const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-    const handleDBManagerClick = (event) => {
-        handleCloseNavMenu(event)
-        navigate('/home')
+    const handleDBManagerClick = () => {
+        handleCloseNavMenu()
+        navigate('/manager')
     };
 
-    const TrendingClick = (event) => {
-        handleCloseNavMenu(event)
+    const TrendingClick = () => {
+        handleCloseNavMenu()
         navigate('/trending')
     };
 
-    const handleReportsClick = (event) => {
-        handleCloseNavMenu(event)
+    const handleReportsClick = () => {
+        handleCloseNavMenu()
         navigate('/reports')
     };
-    const handleRegisterClick = (event) => {
-        handleCloseNavMenu(event)
+    const handleRegisterClick = () => {
+        handleCloseNavMenu()
         navigate('/register')
     };
 
 
     const handleLogoutClick = (event) => {
-        handleCloseNavMenu(event)
+        handleCloseNavMenu()
         event.preventDefault()
 
         axios.post(environment + `/api/User/logout`)
@@ -93,18 +99,21 @@ export default function Navbar() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            <MenuItem key="certificates" onClick={handleDBManagerClick}>
-                                <Typography textAlign="center">DB Manager</Typography>
-                            </MenuItem>
-                            <MenuItem key="requests" onClick={TrendingClick}>
+                            <MenuItem key="trending" onClick={TrendingClick}>
                                 <Typography textAlign="center">Trending</Typography>
                             </MenuItem>
-                            <MenuItem key="generate" onClick={handleReportsClick}>
+                            {role == "Admin" &&
+                            <MenuItem key="dbmanager" onClick={handleDBManagerClick}>
+                                <Typography textAlign="center">DB Manager</Typography>
+                            </MenuItem>}
+                            {role == "Admin" &&
+                            <MenuItem key="reports" onClick={handleReportsClick}>
                                 <Typography textAlign="center">Reports</Typography>
-                            </MenuItem>
+                            </MenuItem>}
+                            {role == "Admin" &&
                             <MenuItem key="register" onClick={handleRegisterClick}>
                                 <Typography textAlign="center">Register</Typography>
-                            </MenuItem>
+                            </MenuItem>}
                             <MenuItem key="logout" onClick={handleLogoutClick}>
                                 <Typography textAlign="center">Logout</Typography>
                             </MenuItem>
@@ -112,33 +121,36 @@ export default function Navbar() {
                     </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             <Button
-                                key="certificates"
-                                onClick={handleDBManagerClick}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                DB Manager
-                            </Button>
-                            <Button
-                                key="requests"
+                                key="trending"
                                 onClick={TrendingClick}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 Trending
                             </Button>
+                            {role == "Admin" &&
                             <Button
-                                key="generate"
+                                key="dbmanager"
+                                onClick={handleDBManagerClick}
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                            >
+                                DB Manager
+                            </Button>}
+                            {role == "Admin" &&
+                            <Button
+                                key="reports"
                                 onClick={handleReportsClick}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 Reports
-                            </Button>
+                            </Button>}
+                            {role == "Admin" &&
                             <Button
                                 key="register"
                                 onClick={handleRegisterClick}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 Register
-                            </Button>
+                            </Button>}
                         </Box>
 
                     <Box sx={{ flexGrow: 0,display: { xs: 'none', md: 'flex' }  }}>

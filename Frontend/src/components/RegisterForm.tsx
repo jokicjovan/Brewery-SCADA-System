@@ -68,7 +68,7 @@ export default function RegisterForm() {
                 <Avatar sx={{ m: 1, bgcolor: "#0f0b0a" }}>
                 </Avatar>
                 <Typography component="h1" variant="h3">
-                    Sign Up
+                    Register user
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
@@ -135,7 +135,7 @@ export default function RegisterForm() {
                         variant="contained"
                         sx={{ mt: 3, mb:3,backgroundColor: "#0f0b0a"}}
                     >
-                        Sign Up
+                        Register
                     </Button>
                 </Box>
             </Box>
@@ -146,7 +146,7 @@ export default function RegisterForm() {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                {"Congratulations, you signed up successfully!"}
+                {"Congratulations, you registered user successfully!"}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">

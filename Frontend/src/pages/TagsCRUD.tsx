@@ -161,7 +161,7 @@ export default function TagsCRUD() {
 
     return (
         <div>
-            <Typography sx={{textAlign: "center", fontSize: "35px", fontWeight: "bold", mb: 3}}>Tags</Typography>
+            <h1 style={{textAlign: "center"}}>Tags</h1>
             <Fab variant="extended" sx={{position: "fixed", bottom: "50px", right: "50px", backgroundColor:"#0f0b0a",color:"white",'&:hover': {
                     color: '#0f0b0a', // Change to your desired color
                 },}}

@@ -28,7 +28,7 @@ export interface AnalogInput {
 export interface Alarm{
     id:string;
     type:string;
-    priority:string;
+    priority:number;
     edgeValue:number;
     unit:string;
     analogInput:AnalogInput;

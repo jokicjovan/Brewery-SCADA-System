@@ -1,15 +1,8 @@
 import {
     Box,
-    Button,
-    Card,
-    CardContent,
-    Container,
-    Fab,
-    Grid,
     IconButton,
-    Modal, Paper,
+    Modal,
     styled,
-    Switch,
     Table,
     TableBody,
     TableCell,
@@ -17,17 +10,14 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TextField,
-    Typography
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {CreateTagPopup} from "../components/CreateTagPopup.tsx";
 import axios from "axios";
 import {environment} from "../utils/Environment";
 import {AnalogData, DigitalData} from "../models/DataInterfaces";
 import AlarmList from "../components/AlarmList";
 import signalRTagService from "../services/signalRTagService.ts";
-import {Add, Delete, Edit, Notifications} from "@mui/icons-material";
+import {Notifications} from "@mui/icons-material";
 
 export default function Trending() {
     const style = {
@@ -137,7 +127,7 @@ export default function Trending() {
         },
     }));
         return (<div>
-                <Typography sx={{textAlign: "center", fontSize: "35px", fontWeight: "bold", mb: 3}}>Trending</Typography>
+                <h1 style={{textAlign: "center"}}>Trending</h1>
                 <Modal
                     aria-labelledby="transition-modal-title"
                     aria-describedby="transition-modal-description"
