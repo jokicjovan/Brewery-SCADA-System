@@ -1,0 +1,18 @@
+.alarm {
+    display: flex;
+    flex-direction: column;
+}
+
+.delete-button {
+    background-color: transparent;
+    border: none;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    align-self: end;
+}
+
+.delete-button:hover {
+    color: red;
+}
