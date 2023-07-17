@@ -25,19 +25,21 @@ The DB Manager, an exclusive feature of the Brewery SCADA Application, empowers 
 The DB Manager also allows admins to manage tags within the SCADA system. Admins can delete unnecessary tags, ensuring a streamlined and organized tag structure. This ensures that the system focuses only on the relevant tags for accurate monitoring and analysis.
 
 Furthermore, admins can exercise control over the scanning of device values by tag. This capability enables admins to selectively turn on or off the scanning of specific tags, optimizing resource utilization and reducing unnecessary data processing.
-  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/5d5c0649-a07a-47d2-ba75-5d38576fdb58)
+  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/5bae5843-8644-4665-b7fe-96e2fcb0d3a4)
+
 
   In the Brewery SCADA Application, admins have the ability to add new tags to the SCADA system. This functionality allows admins to expand and customize the monitoring capabilities of the application based on the specific needs of their brewery.
 
 By adding new tags, admins can track additional data points relevant to their brewery's processes. Whether it's monitoring specific equipment, capturing specialized parameters, or tracking unique variables
 
-  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/c685a31f-711f-46fc-8889-ac219f96de03)
+  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/47fa9ed2-978f-4ad2-9442-d2658447d2fe)
 
   Moreover, the DB Manager allows you to add new alarms or delete existing ones. Alarms are essential for swiftly detecting abnormal conditions or breaches of predefined thresholds. With full control over alarm configuration, you can fine-tune the system to your specific requirements. Receive timely notifications and respond promptly to potential issues, ensuring the smooth operation of your brewery.
 
-  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/18b6178f-7a9e-41b0-b6d6-1391dec4f16b)
+  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/a4a655d9-6f8f-4b6e-83ae-761313d174ed)
 
-  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/c163faa3-b53a-4fa3-b7e9-4bdc1d5ac1f7)
+  ![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/8d21dc18-6194-485b-9e90-bc7031029efb)
+
 
 ### Trending
 The trending feature of the Brewery SCADA Application allows admins and workers to efficiently monitor multiple tags within the SCADA system. This feature provides real-time visibility into tag values, alarms, alerts, and essential tag information.
@@ -48,7 +50,8 @@ The trading feature also tracks alarms associated with specific tags, ensuring p
 
 Additionally, users can access basic information about each tag, including names, descriptions, units of measurement, and relevant metadata. This facilitates a better understanding of the monitored parameters and enhances data interpretation.
 
-![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/c120e1e4-1f98-4142-94d5-1ab4dd869810)
+![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/1ba25f59-0341-4d64-9b38-7373f3ba17df)
+
 
 ### Simulation
 During the development phase, as access to real devices that send values to the database is limited, the Brewery SCADA Application utilizes a background process in .NET to simulate the data transmission process. This simulation replicates the behavior of real devices, providing a reliable testing environment.
@@ -73,5 +76,6 @@ The reports feature also provides admins with comprehensive tag value reports wi
 Additionally, admins can generate reports that provide the latest values of analog and digital tags. This feature allows for a quick snapshot of real-time data, facilitating monitoring and assessment of key parameters.
 
 Admins also have the flexibility to generate reports specific to a particular tag by using its unique tag ID. This allows for detailed analysis and troubleshooting, providing insights into historical data and aiding in pattern identification.
-![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/17046083-a4c5-4344-a00a-baae54893fcd)
+![image](https://github.com/jokicjovan/Brewery-SCADA-System/assets/51921035/e4df45cd-9db8-4fe8-ae99-e9d2cd0e6f63)
+
 
